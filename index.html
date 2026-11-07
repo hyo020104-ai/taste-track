@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TASTE TRACK — 2026 DVCD Graduation Exhibition</title>
+<style>
+@font-face{font-family:"SUIT";src:url(assets/suit.woff2) format("woff2");font-weight:100 900;font-display:block}
+@font-face{font-family:"Share Tech";src:url(assets/share-tech.woff2) format("woff2");font-weight:400;font-display:block}
+
+:root{
+  --g:1;            /* 1440 그리드 비율 = 창 너비/1440 (JS가 갱신). 배치·이미지에만 쓰고 글자와 헤더는 고정 */
+  --yellow:#feef4d;
+  --bg:#111;
+  --line:rgba(254,239,77,.75);
+  --ease:cubic-bezier(.22,.61,.36,1);
+  --cursor:url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzMiIGhlaWdodD0iMzMiIHZpZXdCb3g9IjAgMCAzMyAzMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTIxLjI2NjcgMTYuODY2OEMyMS4yNjY3IDE5LjI5NjggMTkuMjk2NyAyMS4yNjY4IDE2Ljg2NjcgMjEuMjY2OEMxNC40MzY2IDIxLjI2NjggMTIuNDY2NyAxOS4yOTY4IDEyLjQ2NjcgMTYuODY2OEMxMi40NjY3IDE0LjQzNjcgMTQuNDM2NiAxMi40NjY4IDE2Ljg2NjcgMTIuNDY2OEMxOS4yOTY3IDEyLjQ2NjggMjEuMjY2NyAxNC40MzY3IDIxLjI2NjcgMTYuODY2OFoiIGZpbGw9IiNGRUVGNEQiLz4KPHBhdGggZD0iTTI0LjkzMzMgMTYuODY2NEMyNC45MzMzIDEyLjQxMTMgMjEuMzIxNyA4Ljc5OTc0IDE2Ljg2NjcgOC43OTk3NEMxMi40MTE2IDguNzk5NzQgOC43OTk5OCAxMi40MTEzIDguNzk5OTggMTYuODY2NEM4Ljc5OTk4IDIxLjMyMTUgMTIuNDExNiAyNC45MzMxIDE2Ljg2NjcgMjQuOTMzMVYyNS42NjY0QzEyLjAwNjUgMjUuNjY2NCA4LjA2NjY1IDIxLjcyNjUgOC4wNjY2NSAxNi44NjY0QzguMDY2NjUgMTIuMDA2MyAxMi4wMDY1IDguMDY2NDEgMTYuODY2NyA4LjA2NjQxQzIxLjcyNjggOC4wNjY0MSAyNS42NjY3IDEyLjAwNjMgMjUuNjY2NyAxNi44NjY0QzI1LjY2NjcgMjEuNzI2NSAyMS43MjY4IDI1LjY2NjQgMTYuODY2NyAyNS42NjY0VjI0LjkzMzFDMjEuMzIxNyAyNC45MzMxIDI0LjkzMzMgMjEuMzIxNSAyNC45MzMzIDE2Ljg2NjRaIiBmaWxsPSIjRkVFRjREIi8+CjxwYXRoIGQ9Ik0xNi4xMzMzIDBMMTYuODY2NiAtMy4yMDU1ZS0wOEwxNi44NjY2IDMzTDE2LjEzMzMgMzNMMTYuMTMzMyAwWiIgZmlsbD0iI0ZFRUY0RCIvPgo8cGF0aCBkPSJNMzMgMTYuMTMzM1YxNi44NjY2TDAgMTYuODY2NkwwIDE2LjEzMzNMMzMgMTYuMTMzM1oiIGZpbGw9IiNGRUVGNEQiLz4KPC9zdmc+Cg==") 16 16, crosshair;
+}
+html,body,*{cursor:var(--cursor)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg)}
+body{background:var(--bg);color:#fff;font-family:"SUIT",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+
+/* ── 배경: Figma 렌더에서 뽑은 밝기 띠 + 디더 타일(overlay) ──
+   디더는 Bayer 16×16이 약 9.89px 주기로 깔린 무늬라 Figma 화면에서 직접 떠 왔다 */
+.dither{pointer-events:none;mix-blend-mode:overlay;background:url(data:image/png;base64,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) 0 0/89px 89px repeat}
+#band{position:fixed;inset:0;z-index:0;pointer-events:none;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAQ4CAAAAADtROkjAAAAaklEQVR42u1UQQrAMAzSfGH/f6u77FB2GYmO9TBCC4mJ2FDEUfijUFzue9YLGSq0xRbemmSrTqOTBtvzWxjZIiM9XgeHvJ52hrV2/61aiAIcEyaF+B1MlldpiOujmqc66ena1OtnM7oOCic4HCaGU2dnBQAAAABJRU5ErkJggg==) 0 0/100% 100% no-repeat}
+#tex{position:fixed;inset:0;z-index:1}
+body.on-info #band,body.on-info #tex,body.on-archive #band,body.on-archive #tex{display:none}
+body.on-archive #entry,body.on-archive #spacer{display:none}
+body.on-tastes #band,body.on-tastes #tex,body.on-tastes #entry,body.on-tastes #spacer{display:none}
+/* ── Tastes: 1080 한 화면, 시안 비율 그대로 ── */
+#tastes{display:none}
+body.on-tastes #tastes{display:block}
+#tstBg{position:fixed;inset:0;z-index:0;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAQ4CAAAAADtROkjAAAAZElEQVR4nOVQOxYAEAxTp3D/izKYDEjS1uJ1k7/Savn8jHjF8D2mZd05iEOsUk/UHHx5vJpRZC7J66E16eFZnhb4oYo9z+/ANWc2xnEnalfuiljY7qzVL/iMGvE+cVQM5ST91QCY1COGGzxg+wAAAABJRU5ErkJggg==) 0 0/100% 100% no-repeat}
+#tstBg .dither{position:absolute;inset:0}
+.tst{position:relative;width:1440px;height:1080px;z-index:2;zoom:var(--g)}
+.tst-card{position:absolute;top:292px;width:377px;height:671px;background:#323232;display:block;border:0;padding:0;font:inherit;color:inherit;cursor:inherit;overflow:hidden}
+.tst-card.c1{left:51px}
+.tst-card.c2{left:558px}
+.tst-card .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;transition:opacity .5s}
+.tst-card:hover .thumb{opacity:.75}
+.tst-card .play{position:absolute;left:calc(50% - 21.25px);top:calc(50% - 17px);width:35px;height:34px;z-index:1;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.tst-card .play svg{display:block;width:100%;height:100%}
+.tst-card:hover .play{transform:scale(1.08)}
+.tst-card .cap{z-index:1}
+/* 영상 오버레이: 배경 블러 + 가운데 세로 영상 (시안 555×991 / 1080) */
+#vlay{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  background:rgba(17,17,17,.45);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  opacity:0;visibility:hidden;transition:opacity .5s cubic-bezier(.22,.61,.36,1),visibility 0s .5s}
+#vlay.open{opacity:1;visibility:visible;transition:opacity .5s cubic-bezier(.22,.61,.36,1)}
+.vbox{position:relative;height:91.76vh;aspect-ratio:555/991;max-width:calc(100vw - 32px);background:#a7a7a7;
+  transform:scale(.96);transition:transform .6s cubic-bezier(.22,.61,.36,1)}
+#vlay.open .vbox{transform:none}
+.vbox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
+.vbtn{position:absolute;left:50%;top:50%;width:59px;height:59px;margin:-29.5px 0 0 -29.5px;display:flex;align-items:center;justify-content:center;border:0;padding:0;background:none;cursor:inherit;transition:opacity .35s}
+.vbtn span{display:block;filter:drop-shadow(0 0 6px rgba(0,0,0,.5))}
+.vbtn .i-play svg{display:block;width:35px;height:34px;margin-left:-8.75px}
+.vbtn .i-pause svg{display:block;width:21px;height:26px}
+.vbtn .i-pause{display:none}
+.vbox.playing .vbtn .i-play{display:none}
+.vbox.playing .vbtn .i-pause{display:block}
+.vbox.playing .vbtn{opacity:0}
+.vbox.playing:hover .vbtn{opacity:1}
+.vclose{position:absolute;top:11px;right:8px;width:25px;height:25px;border:0;padding:0;background:var(--yellow);cursor:inherit;z-index:2}
+.vclose svg{display:block;width:100%;height:100%}
+.tst-card .soon{position:absolute;left:0;right:0;top:318px;text-align:center;font-family:"Share Tech",monospace;font-size:31px;line-height:35px;letter-spacing:-.62px;color:var(--yellow)}
+.tst-card .cap{position:absolute;left:0;right:0;top:625px;text-align:center;font-family:"Share Tech",monospace;font-size:17px;line-height:35px;letter-spacing:-.34px;color:rgba(255,255,255,.8)}
+.tst-side{position:absolute;left:1079px;top:715px;height:248px;padding-left:28px;border-left:1px solid var(--yellow)}
+.tst-side h2{font-family:"Share Tech",monospace;font-weight:400;font-size:38px;line-height:35px;letter-spacing:-.76px;color:var(--yellow)}
+.tst-side h3,.tst-side p{margin-left:9px}
+.tst-side h3{font-family:"Share Tech",monospace;font-weight:400;font-size:22px;line-height:35px;letter-spacing:-.44px;color:#fff}
+.tst-side h3.v1{margin-top:44px}
+.tst-side h3.v2{margin-top:46px}
+.tst-side p{margin-top:2px;font-size:10px;line-height:22px;letter-spacing:-.2px;color:rgba(255,255,255,.7)}
+.tst-side p.d1{line-height:12px;margin-top:-5px}
+.tst-side p.d2{margin-top:-10px}   /* 제목 글자 아래 7px에서 설명 글자가 시작 */
+@media (max-width:1100px){
+  .tst{width:auto;height:auto;zoom:1;padding:120px 24px 64px;display:flex;flex-direction:column;gap:20px}
+  .tst-card{position:relative;top:auto;left:auto !important;width:100%;height:auto;aspect-ratio:377/671}
+  .tst-card .soon{top:calc(50% - 17px)}
+  .tst-card .cap{top:auto;bottom:10px}
+  .tst-side{position:relative;left:auto;top:auto;height:auto;margin-top:20px}
+}
+
+/* ── 헤더 ── */
+header{position:fixed;left:0;right:0;top:0;height:123px;z-index:20;
+  background:rgba(22,22,22,.5);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px)}
+.hin{height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 51px 0 46px}
+header .brand{display:block;width:287px;cursor:pointer;position:relative;top:3px}
+header .brand img{width:100%;height:auto;filter:drop-shadow(0 0 6px rgba(254,239,77,.45))}
+nav{display:flex;gap:52px;font-family:"Share Tech",monospace;font-size:20px;letter-spacing:-1px;position:relative;top:12px}
+nav a{color:#a9a9a9;transition:color .3s}
+nav a:hover{color:#e8e8e8}
+nav a.on{color:var(--yellow)}
+
+/* ── 뷰 전환 ── */
+#veil{position:fixed;inset:0;background:var(--bg);z-index:30;opacity:0;pointer-events:none;transition:opacity .52s var(--ease)}
+#veil.show{opacity:1}
+
+/* ── 메인 진입 ── */
+#entry{position:fixed;inset:0;z-index:5}
+#dots{position:absolute;inset:0;width:100%;height:100%}
+#logo{position:absolute;left:50%;top:53.7%;width:calc(var(--g)*948px);aspect-ratio:1436/233;transform:translate(-50%,-50%)}
+#logo img{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+#logo .glow{filter:blur(8px) brightness(1.2)}
+#hint{position:absolute;left:50%;top:calc(50% + 441px);transform:translateX(-50%);
+  font-family:"Share Tech",monospace;font-size:20px;letter-spacing:-.4px;color:var(--yellow);white-space:nowrap;text-align:center}
+#hint i{display:block;width:1px;height:26px;margin:10px auto 0;background:linear-gradient(var(--yellow),transparent);animation:drip 1.8s var(--ease) infinite;transform-origin:top}
+@media (max-height:1000px){#hint{top:auto;bottom:6vh}}
+@keyframes drip{0%{transform:scaleY(0);opacity:1}60%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+#spacer{height:320vh}
+body.on-info #entry,body.on-info #spacer{display:none}
+
+/* ── Info 페이지 (OUSIA 관성 스크롤) ── */
+#info{display:none}
+body.on-info #info{display:block}
+#scroller{position:fixed;left:0;right:0;top:0;z-index:2;will-change:transform;background:#1a1a1a url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAA6WCAAAAABqIsbzAAAA30lEQVR42u1YQQ7DMAir84/9/5neaVIPObTEBjQhLm2gdkpVcLg+6xpb2Fzt73VMNSgo4Y08x5CPAbQ42ynyE38sliV48Xg3zljvuhvx43g1xpAXi7QYJHQtVS131muKahIPI95mhca9ZFVoNEIZGxsbJeJVDwj5EOSDtH5q42D2n34rlPcfrGvR2N3QFPd/+jkXhGpJi/ZG7eGm+vL38PsHmP7ebhT1SchxfmI4QxTnxHnOq5z4ufLh3plm1qmZSCKp06B9N0Rx70UZu26awFaTCZ0ecigrNEZ7zsYd+xeaJWVI7JHyggAAAABJRU5ErkJggg==) 0 0/100% 100% no-repeat}
+.page{position:relative;zoom:var(--g);padding:296px 48px 64px 53px}
+.stage{position:relative}
+#scroller > .dither{position:absolute;inset:0}
+/* OUSIA 리빌: 화면에 들어오면 아래에서 떠오른다.
+   opacity는 근접 페이드가 매 프레임 쓰므로, 리빌은 겹치지 않는 filter:opacity + translate로 */
+.rise{filter:opacity(0);translate:0 34px;
+  transition:filter 1.44s cubic-bezier(.25,1,.5,1),translate 1.76s cubic-bezier(.25,1,.5,1)}
+.rise.is-in{filter:none;translate:none}
+.fx{will-change:opacity}
+
+/* ── Archive: 화면 높이는 고정, 이미지 열만 흐른다 ── */
+#archive{display:none}
+body.on-archive #archive{display:block}
+#arcBg{position:fixed;inset:0;z-index:0;background:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAQ4CAAAAADtROkjAAAAZElEQVR4nOVQOxYAEAxTp3D/izKYDEjS1uJ1k7/Savn8jHjF8D2mZd05iEOsUk/UHHx5vJpRZC7J66E16eFZnhb4oYo9z+/ANWc2xnEnalfuiljY7qzVL/iMGvE+cVQM5ST91QCY1COGGzxg+wAAAABJRU5ErkJggg==) 0 0/100% 100% no-repeat}
+#arcBg .dither{position:absolute;inset:0}
+#arcScroller{position:fixed;left:0;right:0;top:0;z-index:2;will-change:transform;pointer-events:none}
+.arc-wrap{position:relative;zoom:var(--g);padding:244px 0 130px 53px}
+.arc-col{width:793px;display:flex;flex-direction:column;gap:24px;pointer-events:auto}
+.arc-row{display:flex;gap:24px}
+.arc-col figure{margin:0;overflow:hidden;background:#151515}
+.arc-col > figure{width:100%}
+.arc-row figure{flex:var(--w) 1 0;min-width:0}
+.arc-col img{display:block;width:100%;height:100%;object-fit:cover}
+.arc-side{zoom:var(--g);position:fixed;z-index:3;top:244px;left:955px;width:431px}
+.arc-side--m{display:none}
+.arc-side h2{font-family:"Share Tech",monospace;font-weight:400;font-size:31px;line-height:35px;letter-spacing:-.62px;color:#a9a9a9;padding-left:4px;transition:color .4s}
+.acc + .acc{margin-top:33px}
+.acc-h{all:unset;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:inherit}
+.acc-h .kr{font-family:"SUIT",sans-serif;font-weight:500;font-size:12px;color:#a9a9a9;transition:color .4s;position:relative;top:5px;margin-right:-4px}
+.acc.is-on .acc-h .kr{color:var(--yellow)}
+.acc-h:hover h2{color:#e2e2e2}
+.acc.is-on h2{color:var(--yellow)}
+.acc-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s cubic-bezier(.22,.61,.36,1)}
+.acc-b > div{overflow:hidden;min-height:0}
+.acc-b ul{opacity:0;transition:opacity .45s}
+.acc.is-open .acc-b{grid-template-rows:1fr}
+.acc.is-open .acc-b ul{opacity:1;transition-delay:.15s}
+.arc-col[hidden]{display:none}
+#arcScroller{transition:opacity .32s}
+#arcScroller.swap{opacity:0}
+.arc-side hr{border:0;height:1px;background:rgba(169,169,169,.6);margin:13px 0 0;transition:background .4s}
+.acc.is-on hr{background:var(--line)}
+.arc-side ul{list-style:none;margin-top:29px;padding-bottom:9px;padding-left:4px;display:flex;flex-direction:column;gap:36px}
+.arc-side li{display:flex;align-items:flex-end;justify-content:space-between;font-family:"Share Tech",monospace;font-size:16px;line-height:18px;letter-spacing:-.32px;color:#fff;position:relative}
+.arc-side li::after{content:"";position:absolute;left:0;right:0;bottom:-8px;height:1px;background:rgba(255,255,255,.25)}
+.arc-side li .kr{font-family:"SUIT",sans-serif;font-size:10px;line-height:12px;letter-spacing:0;opacity:.6}
+@media (max-width:1100px){
+  .arc-wrap{padding:150px 24px 64px}
+  .arc-col{width:100%;gap:12px}
+  .arc-row{gap:12px}
+  .arc-side{display:none}
+  .arc-side--m{display:block;position:relative;top:auto;left:auto;width:auto;margin:0 0 36px}
+  .photo,.map{flex:none}
+}
+
+/* 섹션 A — 포스터 + 기획 글 */
+.secA{display:flex;align-items:flex-start}
+/* 노란 세로선은 이미지 높이에 붙인다 — 창을 줄여 글이 길어져도 선은 포스터·사진과 같은 길이 */
+.poster::after,.photo::after{content:"";position:absolute;top:0;bottom:0;width:1px;background:var(--line);pointer-events:none}
+.poster::after{left:calc(100% + 87px)}
+.photo::after{left:calc(100% + 114px)}
+.poster{flex:0 0 auto;width:561px;position:relative;align-self:flex-start}
+/* 포스터 ↔ 무빙포스터: 오른쪽으로 끌면 무빙포스터가 들어온다 */
+.pv{position:relative;overflow:hidden;aspect-ratio:561/795;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.pv-track{display:flex;width:200%;height:100%;transform:translate3d(-50%,0,0);will-change:transform}
+.pv-track.anim{transition:transform .7s cubic-bezier(.22,.61,.36,1)}
+.pv-slide{width:50%;height:100%;flex:0 0 50%}
+.pv-slide img,.pv-slide video{display:block;width:100%;height:100%;object-fit:cover;pointer-events:none;-webkit-user-drag:none}
+
+.statement{margin-left:87px;padding-left:54px;display:flex;flex-direction:column;justify-content:flex-start;min-width:0}
+.ttl{font-weight:800;font-size:19px;line-height:35px;letter-spacing:-.38px;color:var(--yellow)}
+.ko-body{margin-top:20px;font-weight:500;font-size:12px;line-height:24px;letter-spacing:-.24px;color:rgba(255,255,255,.8)}
+.en-block{margin-top:100px}
+.en-body{margin-top:20px;font-weight:400;font-size:12px;line-height:21px;letter-spacing:-.6px;color:rgba(255,255,255,.8)}
+.gap{display:block;height:24px}
+.en-body .gap{height:21px}
+
+/* 섹션 B — 전시 정보 + 지도 */
+.secB{display:flex;align-items:flex-end;justify-content:space-between;margin-top:470px}
+.where{flex:0 0 auto;padding-left:0;margin-left:-5px}
+.where h2{font-family:"Share Tech",monospace;font-weight:400;font-size:32px;line-height:35px;letter-spacing:-.64px;color:var(--yellow)}
+.where .kr{margin-top:12px;font-weight:400;font-size:19px;line-height:24px;letter-spacing:-.38px;color:var(--yellow)}
+.where .lbl{margin-top:34px;font-weight:500;font-size:18px;line-height:24px;letter-spacing:-.36px;color:rgba(255,255,255,.8);padding-left:2px}
+.where .addr{margin-top:20px;font-weight:600;font-size:18px;line-height:32px;letter-spacing:-.36px;padding-left:2px}
+.where dl{margin-top:47px;display:grid;grid-template-columns:115px auto auto;column-gap:0;row-gap:12px;font-size:15px;line-height:24px;letter-spacing:-.3px;padding-left:2px}
+.where dt{font-weight:500;color:rgba(255,255,255,.8)}
+.where dd{font-weight:600}
+.where dd.t{padding-left:28px}
+.where .insta{display:inline-block;margin-top:64px;font-weight:600;font-size:15px;line-height:32px;letter-spacing:-.3px;color:#fff;opacity:.7;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;transition:opacity .3s,color .3s}
+.where .insta:hover{opacity:1;color:var(--yellow)}
+.map{flex:0 1 660px;margin-left:48px;min-width:0;position:relative}
+.map img{width:100%;height:auto}
+/* 노란 경로: 서문 쪽에서 성산홀까지 그려진다 */
+.map svg{position:absolute;inset:1px;width:calc(100% - 2px);height:calc(100% - 2px);overflow:hidden;pointer-events:none}
+.route{fill:none;stroke:#feef4d;stroke-width:12.5;stroke-linecap:round;stroke-linejoin:round;
+  stroke-dasharray:1;stroke-dashoffset:1;
+  filter:drop-shadow(0 0 2px rgba(254,239,77,.85)) drop-shadow(0 0 7px rgba(254,239,77,.45))}
+.map.draw .route{stroke-dashoffset:0;transition:stroke-dashoffset 2.6s cubic-bezier(.65,0,.35,1) .25s}
+.pulse{fill:none;stroke:#feef4d;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.map.draw .pulse{animation:pulse 1.6s cubic-bezier(.22,.61,.36,1) 2.75s 2}
+@keyframes pulse{0%{opacity:.9;transform:scale(.4)}100%{opacity:0;transform:scale(2.6)}}
+
+/* 섹션 C — 졸업준비위원회 */
+.secC{display:flex;align-items:flex-start;margin-top:404px;margin-left:-3px}
+.photo{flex:0 1 909px;min-width:0;position:relative;align-self:flex-start}
+.photo img{width:100%;height:auto}
+.committee{flex:0 0 auto;margin-left:114px;padding-left:60px;align-self:stretch;display:flex;flex-direction:column;justify-content:space-between}
+/* 시안처럼 맨 위 제목은 사진 윗변, 마지막 Film은 사진 아랫변에 맞춘다 */
+.committee .ttl{font-size:22px;line-height:normal;letter-spacing:-.44px}
+.committee .sub{margin-top:6px;font-weight:500;font-size:16px;letter-spacing:-.32px;color:var(--yellow)}
+.role{margin-top:40px}
+.role + .role{margin-top:40px}
+.role p:first-child{font-weight:300;font-size:18px;letter-spacing:-.72px;color:rgba(255,255,255,.8)}
+.role p:last-child{margin-top:15px;font-weight:600;font-size:18px;letter-spacing:-.36px}
+.secC .committee .role:first-of-type{margin-top:40px}
+
+footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-align:left;font-family:"Share Tech",monospace;font-size:20px;letter-spacing:-.4px;color:var(--yellow)}
+
+/* 줄바꿈: 넓은 화면에서는 디자인의 줄 그대로, 좁으면 자연스럽게 흐르게 */
+.ln{display:inline}
+@media (min-width:1101px){.ln{display:block;white-space:nowrap}}
+.arc-col figure{will-change:opacity}
+
+/* ── 태블릿/모바일 ── */
+@media (max-width:1100px){
+  header{height:84px}
+  .hin{width:100%;height:100%;transform:none;padding:0 24px}
+  #logo{width:86vw}
+  header .brand{width:190px}
+  nav{font-size:17px;gap:18px;top:2px}
+  #hint{font-size:17px}
+  .page{padding:150px 24px 64px}
+  .secA,.secB,.secC{flex-direction:column;align-items:stretch;margin-left:0}
+  .poster{width:100%;max-width:561px}
+  .page,.arc-wrap{--g:1}
+  .statement{margin:56px 0 0;padding-left:24px;border-left:1px solid var(--line)}
+  .poster::after,.photo::after{display:none}
+  .en-block{margin-top:56px}
+  .ko-body,.en-body{font-size:13px}
+  .secB{margin-top:160px}
+  .where{margin:0}
+  .map{margin:48px 0 0;flex-basis:auto}
+  .secC{margin-top:160px}
+  .committee{margin:48px 0 0;padding-left:24px;border-left:1px solid var(--line)}
+  .role,.role + .role,.secC .committee .role:first-of-type{margin-top:36px}
+  footer{margin:200px 0 0;padding-left:0;text-align:center;font-size:17px}
+}
+@media (max-width:520px){
+  header{height:68px}
+  .hin{padding:0 18px}
+  header .brand{width:150px}
+  nav{font-size:15px;gap:14px}
+  .page{padding:120px 18px 48px}
+  .where dl{grid-template-columns:84px auto;row-gap:6px}
+  .where dd.t{grid-column:2;padding-left:0}
+}
+</style>
+</head>
+<body>
+<div id="band"></div>
+<div id="tex" class="dither"></div>
+
+<header>
+ <div class="hin">
+  <a class="brand" id="toEntry" href="#" aria-label="TASTE TRACK 처음으로"><img src="assets/logo.webp" alt="TASTE TRACK"></a>
+  <nav>
+    <a href="#info" class="on" id="toInfo">Info</a>
+    <a href="#tastes" id="toTastes">Tastes</a>
+    <a href="#archive" id="toArchive">Archive</a>
+  </nav>
+ </div>
+</header>
+
+<!-- 메인 진입: 스크롤하면 점이 모여 로고가 된다 -->
+<section id="entry" aria-label="TASTE TRACK">
+  <canvas id="dots"></canvas>
+  <div id="logo">
+    <img class="glow" alt="">
+    <img class="sharp" alt="TASTE TRACK">
+  </div>
+  <div id="hint">Scrolling Here<i></i></div>
+</section>
+<div id="spacer"></div>
+
+<!-- Info -->
+<main id="info">
+  <div id="scroller">
+    <div class="dither" aria-hidden="true"></div>
+    <div class="stage">
+    <div class="page">
+
+      <section class="secA">
+        <figure class="poster fx">
+          <div class="pv" aria-roledescription="carousel" aria-label="포스터 — 오른쪽으로 끌면 무빙포스터">
+            <div class="pv-track">
+              <div class="pv-slide"><video muted loop playsinline preload="auto" poster="assets/moving-poster.jpg" src="assets/moving-poster.mp4" aria-label="TASTE TRACK 무빙포스터"></video></div>
+              <div class="pv-slide"><img src="assets/poster.webp" alt="TASTE TRACK 졸업전시 포스터" width="561" height="795" draggable="false"></div>
+            </div>
+          </div>
+        </figure>
+        <div class="statement">
+          <div class="ko fx">
+            <h2 class="ttl">2026 대구대학교 시각디자인 전공 졸업전시</h2>
+            <p class="ko-body">
+              <span class="ln">과거에는 남들과 비슷한 것을 고르는 일이 무난하고 안전한 선택이었습니다. 하지만 지금은 고를 수 있는 길이 셀 수 없이 </span>
+              <span class="ln">많아졌고, 우리는 각자 자신만의 길을 만들어 가고 있습니다. 모두가 하나의 유행을 따르던 시절과 달리, 지금은 저마다 </span>
+              <span class="ln">다른 감각이 한꺼번에 공존합니다. 이런 변화 속에서 취향은 단순히 무엇을 좋아하는지를 넘어, 내가 어떤 사람인지 보여주는 </span>
+              <span class="ln">방법이 되었습니다. 취향은 우리가 살아오며 들고 다닌 짐과 같습니다. 어떤 사람의 짐은 무겁고, 어떤 사람의 짐은 가볍습니다. </span>
+              <span class="gap"></span>
+              <span class="ln">향하는 방향도 다르고, 오래 들고 다녀 닳은 정도도 저마다 다릅니다. 그리고 우리가 지나온 길은 도시 곳곳에 흔적으로 남아 </span>
+              <span class="ln">끊임없이 기록됩니다.  이렇게 서로 다른 흔적들이 모일 때, 비로소 지금 이 시대의 문화와 우리 세대의 모습이 드러납니다.</span>
+              <span class="ln">이번 전시는 각자가 걸어온 취향의 흔적을 한 장면씩 펼쳐 보입니다. 무엇이 기록되었는지를 살펴보는 데서 그치지 않고, </span>
+              <span class="ln">그 흔적을 따라가며  '나는 어떤 사람인가', 그리고 '우리는 어떤 세대인가'를 함께 묻고자 합니다. 취향이 더 이상 개인의 </span>
+              <span class="ln">선호에 머물지 않고 추적되고 기록되는 시대, </span>
+              <span class="gap"></span>
+              <span class="ln">이번 전시는 각자 들고 온 것을 한 점씩 꺼내 놓는 자리이자 자신의 취향을 드러내고 만들어가는 과정,</span>
+              <span class="ln">그 과정을 43명이 각자의 방식으로 보여 줍니다.</span>
+            </p>
+          </div>
+          <div class="en-block fx">
+            <h2 class="ttl">2026 DVCD Graduation Exhibition</h2>
+            <p class="en-body">
+              <span class="ln">In the past, choosing something similar to others was a safe and easy choice. But now, there are countless paths to choose from </span>
+              <span class="ln">There are more of us now, and each of us is carving out our own path. Unlike the days when everyone followed a single trend, now each of us </span>
+              <span class="ln">Different senses coexist all at once. In this changing world, taste goes beyond just liking something; it reveals who I am </span>
+              <span class="ln">It worked. Taste is like the baggage we carry with us throughout our lives. Some people's burdens are heavy, while some people's are light.</span>
+              <span class="gap"></span>
+              <span class="ln">The direction they are headed to varies, and the wear and tear from carrying them for so long also differs from person to person. </span>
+              <span class="ln">And the path we have walked remains as traces throughout the city It is recorded continuously.  </span>
+              <span class="ln">Only when these different traces come together does the culture of our time and the face of our generation emerge. </span>
+              <span class="ln">This exhibition unfolds a scene of the traces of each individual’s taste. not merely stopping at examining what has been recorded, </span>
+              <span class="ln">By tracing those traces, we seek to ask together, “What kind of person am I?” and “What generation are we?” Taste is no longer individual's</span>
+              <span class="gap"></span>
+              <span class="ln">In an age where works are not merely preferred but tracked and recorded, this exhibition is a space to present one piece each, </span>
+              <span class="ln">revealing and creating personal tastes, with 43 artists showing the process in their own unique ways.</span>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="secB">
+        <div class="where fx">
+          <h2>Exhibition Info</h2>
+          <p class="kr">전시정보</p>
+          <p class="lbl">Location</p>
+          <p class="addr">경북 경산시 진량읍 대구대로 201<br>대구대학교 성산복합 문화공간 (성산홀L층)</p>
+          <dl>
+            <dt>Opening</dt><dd>11.20 (FRI) 18:00 - 20:00</dd><dd></dd>
+            <dt>Day &amp; Time</dt><dd>11.20 (FRI) - 11.25 (WED)</dd><dd class="t">09:00 - 18:00</dd>
+          </dl>
+          <a class="insta" href="https://www.instagram.com/dvcd_graduation/" target="_blank" rel="noopener">TASTE TRACK Instagram 바로가기</a>
+        </div>
+        <figure class="map fx"><img src="assets/map.webp" alt="대구대학교 캠퍼스 지도 — 서문·정문에서 성산홀까지" width="778" height="650">
+          <svg viewBox="1 1 776 648" aria-hidden="true">
+            <path class="route" pathLength="1" d="M-10.0 218.6 L90.0 340.0 L111.0 367.0 L118.0 374.0 L129.0 389.0 L152.0 416.0 L164.0 432.0 L187.0 459.0 L244.0 530.0 L250.0 534.0 L253.0 534.0 L258.0 536.0 L262.0 536.0 L267.0 538.0 L271.0 538.0 L272.0 539.0 L284.0 541.0 L289.0 543.0 L293.0 543.0 L298.0 545.0 L302.0 545.0 L303.0 546.0 L310.0 546.0 L313.0 544.0 L316.0 535.0 L325.0 518.0 L325.0 516.0 L336.0 496.0 L337.0 491.0 L344.0 478.0 L344.0 476.0 L349.0 466.0 L351.0 464.0 L354.0 455.0 L383.0 396.0 L383.0 394.0 L392.0 377.0 L392.0 375.0 L399.0 362.0 L399.0 360.0 L401.0 358.0 L402.0 354.0 L411.0 336.0 L413.0 334.0 L414.0 329.0 L418.0 322.0 L418.0 320.0 L420.0 318.0 L420.0 316.0 L429.0 299.0 L429.0 297.0 L439.0 278.0 L439.0 276.0 L447.0 261.0 L447.0 259.0 L450.0 253.0 L457.0 245.0 L472.0 245.0 L478.0 243.0 L487.0 235.0 L490.0 230.0 L490.0 227.0 L492.0 223.0 L491.0 213.0 L488.0 206.0 L481.0 199.0 L480.0 196.0 L481.0 190.0 L484.0 185.0"/>
+            <circle class="pulse" cx="495" cy="145" r="10"/>
+          </svg>
+        </figure>
+      </section>
+
+      <section class="secC">
+        <figure class="photo fx"><img src="assets/committee.webp" alt="2026 졸업준비위원회" width="909" height="587"></figure>
+        <div class="committee">
+          <div class="fx">
+            <h2 class="ttl">2026 졸업준비위원회</h2>
+            <p class="sub">Graduation Preparatory Committee</p>
+          </div>
+          <div class="role fx"><p>Committee Chair</p><p>윤장현</p></div>
+          <div class="role fx"><p>Graphic &amp; Visual</p><p>김원우, 박수연, 한수연</p></div>
+          <div class="role fx"><p>Directing &amp; Dp</p><p>전경민, 이상열, 안주형</p></div>
+          <div class="role fx"><p>Film</p><p>배정길</p></div>
+        </div>
+      </section>
+
+      <footer>2026 DVCD Graduation Exhibition</footer>
+    </div>
+    </div>
+  </div>
+</main>
+
+<!-- Archive -->
+<main id="archive">
+  <div id="arcBg"><div class="dither"></div></div>
+  <aside class="arc-side">
+    <div class="acc is-open is-on" data-set="merch">
+      <button type="button" class="acc-h" data-set="merch"><h2>Merchandise</h2><span class="kr">취향을 담은 굿즈</span></button>
+      <hr>
+      <div class="acc-b"><div><ul><li><span>Taste Bag</span><span class="kr">토트백</span></li><li><span>Passport Cover</span><span class="kr">여권케이스</span></li><li><span>Sticker Pack</span><span class="kr">스티커팩</span></li><li><span>Badge Set</span><span class="kr">뱃지세트</span></li><li><span>Keyring</span><span class="kr">키링</span></li></ul></div></div>
+    </div>
+    <div class="acc" data-set="behind">
+      <button type="button" class="acc-h" data-set="behind"><h2>Behind Cut</h2><span class="kr">전시준비 비하인드</span></button>
+      <hr>
+    </div>
+  </aside>
+  <div id="arcScroller">
+    <div class="arc-wrap">
+      <aside class="arc-side arc-side--m">
+    <div class="acc is-open is-on" data-set="merch">
+      <button type="button" class="acc-h" data-set="merch"><h2>Merchandise</h2><span class="kr">취향을 담은 굿즈</span></button>
+      <hr>
+      <div class="acc-b"><div><ul><li><span>Taste Bag</span><span class="kr">토트백</span></li><li><span>Passport Cover</span><span class="kr">여권케이스</span></li><li><span>Sticker Pack</span><span class="kr">스티커팩</span></li><li><span>Badge Set</span><span class="kr">뱃지세트</span></li><li><span>Keyring</span><span class="kr">키링</span></li></ul></div></div>
+    </div>
+    <div class="acc" data-set="behind">
+      <button type="button" class="acc-h" data-set="behind"><h2>Behind Cut</h2><span class="kr">전시준비 비하인드</span></button>
+      <hr>
+    </div>
+      </aside>
+      <div class="arc-col" data-set="merch">
+        <figure class="fx" style="--w:793;aspect-ratio:793/450"><img src="assets/arc/merch-01.webp" alt="TASTE TRACK Taste Bag" width="793" height="450" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:321;aspect-ratio:321/450"><img src="assets/arc/merch-02.webp" alt="TASTE TRACK Taste Bag" width="321" height="450" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:448;aspect-ratio:448/450"><img src="assets/arc/merch-03.webp" alt="TASTE TRACK Taste Bag" width="448" height="450" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/580"><img src="assets/arc/merch-04.webp" alt="TASTE TRACK Passport Cover" width="793" height="580" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/merch-05.webp" alt="TASTE TRACK Passport Cover" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/merch-06.webp" alt="TASTE TRACK Passport Cover" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/754"><img src="assets/arc/merch-07.webp" alt="TASTE TRACK Sticker Pack" width="793" height="754" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/merch-08.webp" alt="TASTE TRACK Sticker Pack" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/merch-09.webp" alt="TASTE TRACK Sticker Pack" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/754"><img src="assets/arc/merch-10.webp" alt="TASTE TRACK Keyring" width="793" height="754" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/merch-11.webp" alt="TASTE TRACK Badge Set" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/merch-12.webp" alt="TASTE TRACK Badge Set" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+      </div>
+      <div class="arc-col" data-set="behind" hidden>
+        <figure class="fx" style="--w:793;aspect-ratio:793/450"><img src="assets/arc/behind-01.webp" alt="TASTE TRACK 비하인드 컷 1" width="793" height="450" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:321;aspect-ratio:321/450"><img src="assets/arc/behind-02.webp" alt="TASTE TRACK 비하인드 컷 2" width="321" height="450" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:448;aspect-ratio:448/450"><img src="assets/arc/behind-03.webp" alt="TASTE TRACK 비하인드 컷 3" width="448" height="450" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/580"><img src="assets/arc/behind-04.webp" alt="TASTE TRACK 비하인드 컷 4" width="793" height="580" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/behind-05.webp" alt="TASTE TRACK 비하인드 컷 5" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/behind-06.webp" alt="TASTE TRACK 비하인드 컷 6" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/754"><img src="assets/arc/behind-07.webp" alt="TASTE TRACK 비하인드 컷 7" width="793" height="754" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/behind-08.webp" alt="TASTE TRACK 비하인드 컷 8" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/behind-09.webp" alt="TASTE TRACK 비하인드 컷 9" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+        <figure class="fx" style="--w:793;aspect-ratio:793/754"><img src="assets/arc/behind-10.webp" alt="TASTE TRACK 비하인드 컷 10" width="793" height="754" loading="lazy" decoding="async"></figure>
+        <div class="arc-row"><figure class="fx" style="--w:439;aspect-ratio:439/479"><img src="assets/arc/behind-11.webp" alt="TASTE TRACK 비하인드 컷 11" width="439" height="479" loading="lazy" decoding="async"></figure><figure class="fx" style="--w:330;aspect-ratio:330/479"><img src="assets/arc/behind-12.webp" alt="TASTE TRACK 비하인드 컷 12" width="330" height="479" loading="lazy" decoding="async"></figure></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Tastes -->
+<main id="tastes">
+  <div id="tstBg"><div class="dither"></div></div>
+  <div class="tst">
+    <button type="button" class="tst-card c1 fx" aria-label="video 01 재생">
+      <img class="thumb" src="assets/taste-video-01.jpg" alt="">
+      <span class="play"><svg viewBox="0 0 35 34" aria-hidden="true"><path d="M35 17L8.75 31.7224L8.75 2.27757L35 17Z" fill="#FEEF4D"/></svg></span>
+      <span class="cap">video 01</span>
+    </button>
+    <div class="tst-card c2 fx" aria-label="video 02 공개 예정">
+      <span class="soon">Coming Soon</span>
+      <span class="cap">video 02</span>
+    </div>
+    <aside class="tst-side fx">
+      <h2>Taste Video</h2>
+      <h3 class="v1">video 01</h3>
+      <p class="d1">포스터 홍보과정을 담았습니다.</p>
+      <h3 class="v2">video 02</h3>
+      <p class="d2">졸준위들의 각자의 취향과 취향이 어떻게 본인의 작품과<br>연결이 되었는지, 그리고 비하인드까지 담았습니다.</p>
+    </aside>
+  </div>
+</main>
+
+<div id="vlay" role="dialog" aria-modal="true" aria-label="video 01" aria-hidden="true">
+  <div class="vbox">
+    <video playsinline preload="metadata" poster="assets/taste-video-01.jpg" src="assets/taste-video-01.mp4"></video>
+    <button type="button" class="vbtn" aria-label="재생 / 멈춤"><span class="i-play"><svg viewBox="0 0 35 34" aria-hidden="true"><path d="M35 17L8.75 31.7224L8.75 2.27757L35 17Z" fill="#FEEF4D"/></svg></span><span class="i-pause"><svg viewBox="0 0 21 26" aria-hidden="true"><path d="M0 0H7.875V26H0V0ZM13.125 0H21V26H13.125V0Z" fill="#FEEF4D"/></svg></span></button>
+    <button type="button" class="vclose" aria-label="닫기"><svg viewBox="0 0 25 25" aria-hidden="true"><path d="M7 7 L18 18 M18 7 L7 18" stroke="#111" stroke-width="1.6"/></svg></button>
+  </div>
+</div>
+
+<div id="veil"></div>
+
+<script>
+(() => {
+  const LOGO_SRC = document.querySelector('header .brand img').src;
+  const body = document.body;
+  const clamp = (v,a=0,b=1) => v < a ? a : v > b ? b : v;
+  const smoother = t => (t = clamp(t), t*t*t*(t*(t*6 - 15) + 10));
+  const easeInOut = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
+
+  /* ── 1440 그리드 비율: 배치와 이미지 크기만 창 너비에 맞춰 늘고 줄어든다 ── */
+  const root = document.documentElement;
+  function applyGrid(){
+    const w = root.clientWidth, h = innerHeight;
+    root.style.setProperty('--g', w > 1100 ? (w/1440).toFixed(5) : 1);
+    root.style.setProperty('--gt', Math.min(w/1440, h/1080).toFixed(5));   // Tastes는 한 화면에 통째로 들어가게
+  }
+  applyGrid();
+
+  /* ══════════════ 메인 진입: 스크롤로 점 → 로고 ══════════════ */
+  const cv = document.getElementById('dots'), ctx = cv.getContext('2d');
+  const logoBox = document.getElementById('logo');
+  const sharp = logoBox.querySelector('.sharp'), glow = logoBox.querySelector('.glow');
+  const hint = document.getElementById('hint');
+  sharp.src = glow.src = LOGO_SRC;
+
+  // 흐릿한 원 하나를 미리 그려 두고 찍는다 (arc를 수천 번 그리는 것보다 가볍다)
+  const sprite = document.createElement('canvas');
+  (() => {
+    const s = 32; sprite.width = sprite.height = s;
+    const g = sprite.getContext('2d'), gr = g.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);
+    gr.addColorStop(0,'rgba(254,239,77,1)'); gr.addColorStop(.45,'rgba(254,239,77,.95)');
+    gr.addColorStop(.7,'rgba(254,239,77,.35)'); gr.addColorStop(1,'rgba(254,239,77,0)');
+    g.fillStyle = gr; g.fillRect(0,0,s,s);
+  })();
+
+  const BUCKETS = 8;
+  let W = 0, H = 0, buckets = [], ready = false;
+  const img = new Image(); img.src = LOGO_SRC;
+
+  function sizeCanvas(){ W = innerWidth; H = innerHeight; cv.width = W; cv.height = H; }
+
+  function build(){
+    const r = logoBox.getBoundingClientRect();
+    if (!r.width || !img.complete || !img.naturalWidth) return;
+    const lw = Math.round(r.width), lh = Math.round(r.height);
+    const step = lw < 600 ? 4 : 6, dot = lw < 600 ? 3.6 : 5;
+    const oc = document.createElement('canvas'); oc.width = lw; oc.height = lh;
+    const ox = oc.getContext('2d', { willReadFrequently:true });
+    ox.drawImage(img, 0, 0, lw, lh);
+    const data = ox.getImageData(0, 0, lw, lh).data;
+    const cx = r.left + lw/2, cy = r.top + lh/2, reach = Math.max(W, H)*0.55;
+    const list = [];
+    for (let y = 0; y < lh; y += step) for (let x = 0; x < lw; x += step){
+      const a = data[(y*lw + x)*4 + 3]/255;
+      if (a < .25) continue;
+      const ang = Math.random()*Math.PI*2, rad = reach*(0.25 + Math.random()*1.1);
+      list.push({
+        tx:r.left + x, ty:r.top + y,
+        sx:cx + Math.cos(ang)*rad, sy:cy + Math.sin(ang)*rad*0.8,
+        d:Math.random()*0.3, ph:Math.random()*6.283,
+        w1:.18 + Math.random()*.22, w2:.15 + Math.random()*.22,
+        am:14 + Math.random()*26, a:Math.min(1, a*1.15), s:dot*(.75 + Math.random()*.6)
+      });
+    }
+    buckets = Array.from({length:BUCKETS}, () => []);
+    for (const q of list) buckets[Math.min(BUCKETS-1, Math.floor(q.a*BUCKETS))].push(q);
+    ready = true;
+  }
+
+  function paint(T, prog, alpha){
+    ctx.clearRect(0, 0, W, H);
+    if (!ready || alpha <= .005) return;
+    for (let b = 0; b < BUCKETS; b++){
+      const L = buckets[b]; if (!L.length) continue;
+      ctx.globalAlpha = ((b + .5)/BUCKETS)*alpha;
+      for (let i = 0; i < L.length; i++){
+        const p = L[i];
+        const wx = p.sx + Math.sin(T*p.w1*2 + p.ph)*p.am;
+        const wy = p.sy + Math.cos(T*p.w2*2 + p.ph*1.3)*p.am;
+        const u = (prog - p.d)/(1 - p.d);
+        const e = u <= 0 ? 0 : easeInOut(u < 1 ? u : 1);
+        const x = wx + (p.tx - wx)*e, y = wy + (p.ty - wy)*e;
+        const sz = p.s*(1.5 - .45*e);
+        ctx.drawImage(sprite, x - sz/2, y - sz/2, sz, sz);
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // 스크롤 위치 → 진행도. S는 목표값을 천천히 따라가서 휠 한 칸에도 끊기지 않는다.
+  const GATHER_END = .80;            // 이 지점까지 점이 모인다
+  const MERGE0 = .70, MERGE1 = .97;  // 점이 실제 로고 이미지로 녹아드는 구간
+  let S = 0, t0 = null, leaving = false, doneAt = 0;
+
+  function entryProgress(){
+    const max = document.documentElement.scrollHeight - innerHeight;
+    return max > 0 ? clamp(scrollY/max) : 0;
+  }
+
+  function entryFrame(now){
+    if (t0 === null) t0 = now;
+    const T = (now - t0)/1000;
+    const target = entryProgress();
+    S += (target - S)*0.06;
+    if (Math.abs(target - S) < 1e-4) S = target;
+
+    const prog = clamp(S/GATHER_END);
+    const mg = smoother((S - MERGE0)/(MERGE1 - MERGE0));
+    const intro = smoother(T/1.4);
+    paint(T, prog, intro*(1 - mg*.92));
+    sharp.style.opacity = mg;
+    glow.style.opacity = mg*.6;
+    hint.style.opacity = intro*(1 - smoother(S/.12));
+
+    // 로고 완성 → 잠깐 머문 뒤 Info로
+    if (!leaving){
+      if (S > .975 && target > .985){ doneAt = doneAt || now; if (now - doneAt > 180) goInfo(); }
+      else doneAt = 0;
+    }
+  }
+
+  /* ══════════════ Info·Archive: OUSIA 관성 스크롤 ══════════════ */
+  const scroller = document.getElementById('scroller');
+  const arcScroller = document.getElementById('arcScroller');
+  const fxInfo = [...document.querySelectorAll('#info .fx')];
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+  let arcSet = 'merch';
+  const fxArcOf = s => [...document.querySelectorAll(`#archive .arc-col[data-set="${s}"] .fx`)];
+  let fxArc = fxArcOf('merch');
+  const fxTastes = [...document.querySelectorAll('#tastes .fx')];
+  const fxList = () => view === 'archive' ? fxArc : view === 'tastes' ? fxTastes : fxInfo;
+  const CONFIG = { ease:.085, fadeFloor:.06, fadeCurve:1.7, span:.62 };
+  let scrollCurrent = 0;
+  const activeScroller = () => view === 'archive' ? arcScroller : scroller;
+
+  function fadeValue(d, span){ return Math.max(CONFIG.fadeFloor, Math.min(1, 1 - Math.pow(d/span, CONFIG.fadeCurve))); }
+
+  function setInfoHeight(){
+    if (view === 'entry') return;
+    if (view === 'tastes'){ body.style.height = ''; return; }
+    body.style.height = activeScroller().getBoundingClientRect().height + 'px';
+  }
+
+  /* OUSIA 리빌 — 화면에 들어오면 떠오르고, 화면 밖으로 나가면 다시 접어 둔다.
+     그래서 끝까지 내렸다가 다시 올려도 매번 떠오른다. */
+  const riseIO = new IntersectionObserver(es => {
+    es.forEach(en => en.target.classList.toggle('is-in', en.isIntersecting));
+  }, { threshold:.06, rootMargin:'0px 0px -8% 0px' });
+  /* 지도 경로 — 절반쯤 들어오면 그리고, 완전히 벗어나면 지워 둔다 */
+  const mapEl = document.querySelector('.map');
+  const mapIO = new IntersectionObserver(es => {
+    es.forEach(en => {
+      if (en.intersectionRatio >= .45) mapEl.classList.add('draw');
+      else if (!en.isIntersecting) mapEl.classList.remove('draw');
+    });
+  }, { threshold:[0, .45] });
+
+  function setupRise(){
+    const list = fxList();
+    if (view === 'info'){ mapEl.classList.remove('draw'); mapIO.observe(mapEl); }
+    list.forEach(el => { el.classList.add('rise'); el.classList.remove('is-in'); riseIO.unobserve(el); riseIO.observe(el); });
+  }
+  if ('ResizeObserver' in window){
+    const ro = new ResizeObserver(() => setInfoHeight());
+    ro.observe(scroller); ro.observe(arcScroller);
+  }
+
+  function applyProximityFade(){
+    const mid = innerHeight/2, span = innerHeight*CONFIG.span;
+    for (const el of fxList()){
+      const b = el.getBoundingClientRect();
+      let d;
+      if (b.height > innerHeight*.6) d = mid < b.top ? b.top - mid : mid > b.bottom ? mid - b.bottom : 0;
+      else d = Math.abs(b.top + b.height/2 - mid);
+      el.style.opacity = fadeValue(d, span).toFixed(3);
+    }
+  }
+
+  function infoFrame(){
+    scrollCurrent += (scrollY - scrollCurrent)*CONFIG.ease;
+    if (Math.abs(scrollY - scrollCurrent) < .05) scrollCurrent = scrollY;
+    if (view === 'tastes') return;   // 한 화면 고정 — 스크롤·근접 페이드 없음
+    activeScroller().style.transform = `translate3d(0,${-scrollCurrent}px,0)`;
+    applyProximityFade();
+  }
+
+  /* ── 포스터 캐러셀: 0 = 무빙포스터(왼쪽), 1 = 포스터(기본) ── */
+  (function posterCarousel(){
+    const box = document.querySelector('.pv'), track = box.querySelector('.pv-track');
+    const vid = box.querySelector('video');
+    let idx = 1, down = false, x0 = 0, y0 = 0, dx = 0, t0 = 0, horiz = null;
+    const set = (pct, anim) => { track.classList.toggle('anim', !!anim); track.style.transform = `translate3d(${pct}%,0,0)`; };
+    function go(i){
+      idx = i; set(-50*i, true);
+      if (i === 0){ try { vid.currentTime = 0; } catch(e){} const p = vid.play(); if (p && p.catch) p.catch(()=>{}); }
+      else setTimeout(() => { if (idx === 1) vid.pause(); }, 700);
+    }
+    box.addEventListener('pointerdown', e => {
+      down = true; horiz = null; x0 = e.clientX; y0 = e.clientY; dx = 0; t0 = performance.now();
+      box.setPointerCapture(e.pointerId);
+    });
+    box.addEventListener('pointermove', e => {
+      if (!down) return;
+      dx = e.clientX - x0; const dy = e.clientY - y0;
+      if (horiz === null && Math.hypot(dx, dy) > 6) horiz = Math.abs(dx) > Math.abs(dy);
+      if (!horiz) return;
+      const w = box.clientWidth; let pct = -50*idx + (dx/w)*50;
+      if (pct > 0) pct *= .35; if (pct < -50) pct = -50 + (pct + 50)*.35;   // 끝에서는 고무줄처럼
+      set(pct, false);
+    });
+    const up = () => {
+      if (!down) return; down = false;
+      if (!horiz){ set(-50*idx, true); return; }
+      const w = box.clientWidth, v = dx/Math.max(1, performance.now() - t0);
+      if ((dx > w*.18 || v > .5) && idx === 1) go(0);        // 오른쪽으로 끌면 무빙포스터
+      else if ((dx < -w*.18 || v < -.5) && idx === 0) go(1);  // 왼쪽으로 끌면 다시 포스터
+      else set(-50*idx, true);
+    };
+    box.addEventListener('pointerup', up); box.addEventListener('pointercancel', up);
+  })();
+
+  /* ── Archive: Merchandise ↔ Behind Cut — 고른 쪽만 노랑, 목록은 펼치고 접힌다 ── */
+  async function setArcSet(s){
+    if (s === arcSet) return;
+    arcSet = s;
+    document.querySelectorAll('#archive .acc').forEach(a => {
+      const on = a.dataset.set === s;
+      a.classList.toggle('is-on', on);
+      if (a.querySelector('.acc-b')) a.classList.toggle('is-open', on);
+    });
+    arcScroller.classList.add('swap'); await wait(320);
+    document.querySelectorAll('#archive .arc-col').forEach(c => c.hidden = c.dataset.set !== s);
+    fxArc.forEach(el => riseIO.unobserve(el));
+    fxArc = fxArcOf(s);
+    scrollTo(0, 0); scrollCurrent = 0; setInfoHeight(); infoFrame();
+    setupRise();
+    arcScroller.classList.remove('swap');
+  }
+  document.querySelectorAll('#archive .acc-h').forEach(b => b.addEventListener('click', () => setArcSet(b.dataset.set)));
+
+  /* ══════════════ 뷰 전환 ══════════════ */
+  const veil = document.getElementById('veil');
+  let view = 'entry';
+
+  // 전환 중 + 직후 잠깐은 휠·터치를 막는다 — 트랙패드 관성이 Info로 넘어가 첫 화면을 밀어 버리지 않게
+  let lockUntil = 0;
+  const block = e => { if (leaving || performance.now() < lockUntil) e.preventDefault(); };
+  addEventListener('wheel', block, { passive:false });
+  addEventListener('touchmove', block, { passive:false });
+
+  async function swap(fn, after){
+    veil.classList.add('show'); await wait(520);
+    fn(); await wait(140);
+    scrollTo(0, 0); scrollCurrent = 0;
+    if (after) after();
+    veil.classList.remove('show');
+    lockUntil = performance.now() + 900;
+    await wait(520);
+  }
+
+  const navInfo = document.getElementById('toInfo'), navArc = document.getElementById('toArchive'), navTst = document.getElementById('toTastes');
+  function setNav(){
+    navInfo.classList.toggle('on', view === 'info' || view === 'entry');   // 메인·Info 시안은 Info가 노랑
+    navTst.classList.toggle('on', view === 'tastes');
+    navArc.classList.toggle('on', view === 'archive');
+  }
+
+  async function goView(next){
+    if (view === next || leaving) return;
+    leaving = true;
+    await swap(() => {
+      view = next;
+      body.classList.toggle('on-info', next === 'info');
+      body.classList.toggle('on-archive', next === 'archive');
+      body.classList.toggle('on-tastes', next === 'tastes');
+      if (next !== 'tastes' && window.__stopTaste) window.__stopTaste();
+      history.replaceState(null, '', '#' + next);
+      setNav();
+      scrollTo(0, 0); scrollCurrent = 0; setInfoHeight(); infoFrame();
+    }, setupRise);   // 막이 걷히는 순간 떠오르기 시작
+    leaving = false;
+  }
+  const goInfo = () => goView('info');
+  const goArchive = () => goView('archive');
+  const goTastes = () => goView('tastes');
+  /* Tastes video 01 — 누르면 소리와 함께 재생, 다시 누르면 멈춤. 끝나면 처음 화면으로 */
+  (function tasteVideo(){
+    const card = document.querySelector('.tst-card.c1'), lay = document.getElementById('vlay');
+    const box = lay.querySelector('.vbox'), v = box.querySelector('video');
+    const play = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(()=>{}); };
+    function open(){ lay.classList.add('open'); lay.setAttribute('aria-hidden','false'); try { v.currentTime = 0; } catch(e){} play(); }
+    function close(){ v.pause(); lay.classList.remove('open'); lay.setAttribute('aria-hidden','true'); }
+    card.addEventListener('click', open);
+    box.querySelector('.vbtn').addEventListener('click', e => { e.stopPropagation(); v.paused ? play() : v.pause(); });
+    v.addEventListener('click', () => v.paused ? play() : v.pause());
+    box.querySelector('.vclose').addEventListener('click', e => { e.stopPropagation(); close(); });
+    lay.addEventListener('click', e => { if (e.target === lay) close(); });   // 블러 바깥을 누르면 닫힘
+    addEventListener('keydown', e => { if (e.key === 'Escape' && lay.classList.contains('open')) close(); });
+    v.addEventListener('play', () => box.classList.add('playing'));
+    v.addEventListener('pause', () => box.classList.remove('playing'));
+    v.addEventListener('ended', () => box.classList.remove('playing'));
+    lay.addEventListener('wheel', e => e.preventDefault(), { passive:false });   // 열려 있는 동안 뒤 페이지 고정
+    window.__stopTaste = close;
+  })();
+
+  async function goEntry(){
+    if (leaving) return;
+    if (view === 'entry'){ scrollTo({ top:0, behavior:'smooth' }); return; }
+    leaving = true;
+    await swap(() => {
+      view = 'entry'; body.classList.remove('on-info', 'on-archive', 'on-tastes'); if (window.__stopTaste) window.__stopTaste(); body.style.height = '';
+      history.replaceState(null, '', location.pathname + location.search);
+      setNav();
+      scrollTo(0, 0); S = 0; t0 = null; doneAt = 0;
+      sharp.style.opacity = glow.style.opacity = 0;
+      sizeCanvas(); build(); ctx.clearRect(0,0,W,H);
+    });
+    leaving = false;
+  }
+
+  navInfo.addEventListener('click', e => { e.preventDefault(); goInfo(); });
+  navArc.addEventListener('click', e => { e.preventDefault(); goArchive(); });
+  navTst.addEventListener('click', e => { e.preventDefault(); goTastes(); });
+  document.getElementById('toEntry').addEventListener('click', e => { e.preventDefault(); goEntry(); });
+  document.querySelectorAll('nav a[aria-disabled]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+
+  function loop(now){
+    if (view === 'entry') entryFrame(now); else infoFrame();
+    requestAnimationFrame(loop);
+  }
+
+  let rz;
+  addEventListener('resize', () => {
+    clearTimeout(rz);
+    applyGrid();
+    rz = setTimeout(() => { if (view === 'entry'){ sizeCanvas(); build(); } else setInfoHeight(); }, 120);
+  });
+
+  function boot(){
+    sizeCanvas(); build();
+    if (location.hash === '#info'){
+      view = 'info'; body.classList.add('on-info'); setInfoHeight(); setupRise();
+    } else if (location.hash === '#tastes'){
+      view = 'tastes'; body.classList.add('on-tastes'); setNav(); setupRise();
+    } else if (location.hash === '#archive'){
+      view = 'archive'; body.classList.add('on-archive'); setNav(); setInfoHeight(); setupRise();
+    } else {
+      // 새로고침 시 브라우저가 스크롤을 복원하면 바로 로고가 완성돼 버리니 처음부터
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      scrollTo(0, 0);
+    }
+    requestAnimationFrame(loop);
+  }
+  const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
+  Promise.all([fontsReady, img.decode ? img.decode().catch(()=>{}) : null]).then(boot);
+  window.__tt = { goInfo, goArchive, goEntry, get S(){ return S; } };
+})();
+</script>
+</body>
+</html>
