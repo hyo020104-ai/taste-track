@@ -106,7 +106,8 @@ nav a.on{color:var(--yellow)}
 #dots{position:absolute;inset:0;width:100%;height:100%}
 #logo{position:absolute;left:50%;top:53.7%;width:calc(var(--g)*948px);aspect-ratio:1436/233;transform:translate(-50%,-50%)}
 #logo img{position:absolute;inset:0;width:100%;height:100%;opacity:0}
-#logo .glow{filter:blur(8px) brightness(1.2)}
+/* 번짐은 미리 그려 둔 이미지로 — CSS blur는 폰 사파리에서 이미지 테두리 모양 박스가 비친다 */
+#logo img.glow{inset:auto;left:-2.7855%;top:-17.1674%;width:105.5710%;height:134.3348%}
 #hint{position:absolute;left:50%;top:calc(50% + 441px);transform:translateX(-50%);
   font-family:"Share Tech",monospace;font-size:20px;letter-spacing:-.4px;color:var(--yellow);white-space:nowrap;text-align:center}
 #hint i{display:block;width:1px;height:26px;margin:10px auto 0;background:linear-gradient(var(--yellow),transparent);animation:drip 1.8s var(--ease) infinite;transform-origin:top}
@@ -143,7 +144,7 @@ body.on-archive #archive{display:block}
 .arc-row figure{flex:var(--w) 1 0;min-width:0}
 .arc-col img{display:block;width:100%;height:100%;object-fit:cover}
 .arc-side{zoom:var(--g);position:fixed;z-index:3;top:244px;left:955px;width:431px}
-.arc-side--m{display:none}
+.arc-side--m{display:none;pointer-events:auto}
 .arc-side h2{font-family:"Share Tech",monospace;font-weight:400;font-size:31px;line-height:35px;letter-spacing:-.62px;color:#a9a9a9;padding-left:4px;transition:color .4s}
 .acc + .acc{margin-top:33px}
 .acc-h{all:unset;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:inherit}
@@ -305,7 +306,7 @@ html.m #logo{width:84vw;top:50%}
   .where .insta{margin-top:28px;font-size:14px}
   .map{margin-top:32px}
   .secC{margin-top:96px}
-  .committee{margin-top:32px;padding-left:16px}
+  .committee{order:-1;margin:0 0 32px;padding-left:16px}
   .committee .ttl{font-size:19px}
   .committee .sub{font-size:13px}
   .role,.role + .role,.secC .committee .role:first-of-type{margin-top:22px}
@@ -565,7 +566,7 @@ html.m #logo{width:84vw;top:50%}
   const logoBox = document.getElementById('logo');
   const sharp = logoBox.querySelector('.sharp'), glow = logoBox.querySelector('.glow');
   const hint = document.getElementById('hint');
-  sharp.src = glow.src = LOGO_SRC;
+  sharp.src = LOGO_SRC; glow.src = 'assets/logo-glow.webp';
 
   // 흐릿한 원 하나를 미리 그려 두고 찍는다 (arc를 수천 번 그리는 것보다 가볍다)
   const sprite = document.createElement('canvas');
