@@ -42,7 +42,7 @@ body.on-tastes #tastes{display:block}
 .tst-card.c2{left:558px}
 .tst-card .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;transition:opacity .5s}
 .tst-card:hover .thumb{opacity:.75}
-.tst-card .play{position:absolute;left:calc(50% - 21.25px);top:calc(50% - 17px);width:35px;height:34px;z-index:1;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
+.tst-card .play{position:absolute;left:171px;top:318px;width:35px;height:34px;z-index:1;transition:transform .5s cubic-bezier(.22,.61,.36,1)}
 .tst-card .play svg{display:block;width:100%;height:100%}
 .tst-card:hover .play{transform:scale(1.08)}
 .tst-card .cap{z-index:1}
@@ -70,13 +70,14 @@ body.on-tastes #tastes{display:block}
 .tst-card .cap{position:absolute;left:0;right:0;top:625px;text-align:center;font-family:"Share Tech",monospace;font-size:17px;line-height:35px;letter-spacing:-.34px;color:rgba(255,255,255,.8)}
 .tst-side{position:absolute;left:1079px;top:715px;height:248px;padding-left:28px;border-left:1px solid var(--yellow)}
 .tst-side h2{font-family:"Share Tech",monospace;font-weight:400;font-size:38px;line-height:35px;letter-spacing:-.76px;color:var(--yellow)}
-.tst-side h3,.tst-side p{margin-left:9px}
-.tst-side h3{font-family:"Share Tech",monospace;font-weight:400;font-size:22px;line-height:35px;letter-spacing:-.44px;color:#fff}
-.tst-side h3.v1{margin-top:44px}
-.tst-side h3.v2{margin-top:46px}
-.tst-side p{margin-top:2px;font-size:10px;line-height:22px;letter-spacing:-.2px;color:rgba(255,255,255,.7)}
-.tst-side p.d1{line-height:12px;margin-top:-5px}
-.tst-side p.d2{margin-top:-10px}   /* 제목 글자 아래 7px에서 설명 글자가 시작 */
+.tst-side .kr{margin:7px 0 0 4px;font-weight:500;font-size:12px;line-height:15px;color:var(--yellow)}
+.tst-side h3,.tst-side p:not(.kr){margin-left:9px}
+.tst-side h3{font-family:"Share Tech",monospace;font-weight:400;font-size:22px;line-height:25px;letter-spacing:-.44px;color:#fff}
+.tst-side h3.v1{margin-top:46px}
+.tst-side h3.v2{margin-top:45px}
+.tst-side p.d1,.tst-side p.d2{margin-top:4px;font-size:10px;letter-spacing:-.2px;color:rgba(255,255,255,.7)}
+.tst-side p.d1{line-height:12px}
+.tst-side p.d2{line-height:15px}
 @media (max-width:1100px){
   .tst{width:auto;height:auto;zoom:1;padding:120px 24px 64px;display:flex;flex-direction:column;gap:20px}
   .tst-card{position:relative;top:auto;left:auto !important;width:100%;height:auto;aspect-ratio:377/671}
@@ -464,6 +465,7 @@ footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-a
     </div>
     <aside class="tst-side fx">
       <h2>Taste Video</h2>
+      <p class="kr">취향기록</p>
       <h3 class="v1">video 01</h3>
       <p class="d1">포스터 홍보과정을 담았습니다.</p>
       <h3 class="v2">video 02</h3>
