@@ -275,6 +275,65 @@ footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-a
   .where dl{grid-template-columns:84px auto;row-gap:6px}
   .where dd.t{grid-column:2;padding-left:0}
 }
+/* ══════════ 모바일 (폰) ══════════ */
+html.m #spacer{display:none}
+html.m #hint{display:none}
+html.m body:not(.on-info):not(.on-tastes):not(.on-archive){overflow:hidden;height:100vh;height:100svh}
+html.m #logo{width:84vw;top:50%}
+@media (max-width:768px){
+  header{height:64px}
+  .hin{padding:0 18px}
+  header .brand{width:140px;top:1px}
+  nav{font-size:15px;gap:16px;top:2px;letter-spacing:-.4px}
+  /* Info */
+  .page{padding:104px 20px 40px}
+  .poster{max-width:none}
+  .statement{margin-top:44px;padding-left:16px}
+  .ttl{font-size:17px;line-height:26px}
+  .ko-body{margin-top:12px;font-size:13px;line-height:22px}
+  .en-block{margin-top:44px}
+  .en-body{margin-top:12px;font-size:12px;line-height:19px;letter-spacing:-.3px}
+  .gap{height:14px}.en-body .gap{height:12px}
+  .secB{margin-top:96px}
+  .where h2{font-size:28px;line-height:32px}
+  .where .kr{margin-top:6px;font-size:16px}
+  .where .lbl{margin-top:28px;font-size:15px}
+  .where .addr{margin-top:8px;font-size:15px;line-height:24px}
+  .where dl{margin-top:28px;grid-template-columns:86px 1fr;row-gap:6px;font-size:14px}
+  .where dd:empty{display:none}
+  .where dd.t{grid-column:2;padding-left:0;margin-top:-4px}
+  .where .insta{margin-top:28px;font-size:14px}
+  .map{margin-top:32px}
+  .secC{margin-top:96px}
+  .committee{margin-top:32px;padding-left:16px}
+  .committee .ttl{font-size:19px}
+  .committee .sub{font-size:13px}
+  .role,.role + .role,.secC .committee .role:first-of-type{margin-top:22px}
+  .role p:first-child{font-size:14px}
+  .role p:last-child{margin-top:6px;font-size:15px}
+  footer{margin-top:96px;font-size:15px}
+  /* Tastes: 설명 먼저, 영상 카드 두 개는 나란히 */
+  .tst{display:grid !important;grid-template-columns:1fr 1fr;gap:12px;padding:104px 20px 48px !important}
+  .tst-side{order:-1;grid-column:1 / -1;margin:0 0 20px !important;padding-left:16px}
+  .tst-side h2{font-size:30px;line-height:32px}
+  .tst-side h3.v1{margin-top:26px}
+  .tst-side h3.v2{margin-top:22px}
+  .tst-side p.d1,.tst-side p.d2{font-size:11px;line-height:16px}
+  .tst-card{width:auto !important}
+  .tst-card .play{left:calc(50% - 15px) !important;top:calc(50% - 15px) !important;width:30px;height:29px}
+  .tst-card .soon{font-size:19px;line-height:24px;top:calc(50% - 12px)}
+  .tst-card .cap{font-size:13px;bottom:6px}
+  /* Archive */
+  .arc-wrap{padding:104px 20px 40px}
+  .arc-side--m{margin-bottom:28px}
+  .arc-side h2{font-size:26px;line-height:30px}
+  .acc + .acc{margin-top:22px}
+  .arc-side ul{margin-top:20px;gap:30px}
+  .arc-col,.arc-row{gap:10px}
+  /* 영상 오버레이: 폰 화면 안에 비율 그대로 */
+  .vbox{height:auto;width:min(calc(100vw - 32px), calc(86svh * 555 / 991))}
+  .vclose{width:32px;height:32px;top:10px;right:10px}
+}
 </style>
 </head>
 <body>
@@ -577,6 +636,8 @@ footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-a
   const MERGE0 = .70, MERGE1 = .97;  // 점이 실제 로고 이미지로 녹아드는 구간
   let S = 0, t0 = null, leaving = false, doneAt = 0;
 
+  const MOBILE = matchMedia('(max-width:768px), (pointer:coarse) and (max-width:1100px)').matches;
+  if (MOBILE) document.documentElement.classList.add('m');
   function entryProgress(){
     const max = document.documentElement.scrollHeight - innerHeight;
     return max > 0 ? clamp(scrollY/max) : 0;
@@ -585,7 +646,7 @@ footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-a
   function entryFrame(now){
     if (t0 === null) t0 = now;
     const T = (now - t0)/1000;
-    const target = entryProgress();
+    const target = MOBILE ? clamp((T - .5)/2.6) : entryProgress();   // 모바일: 스크롤 없이 시간으로 모인다
     S += (target - S)*0.06;
     if (Math.abs(target - S) < 1e-4) S = target;
 
