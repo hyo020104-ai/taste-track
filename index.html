@@ -31,6 +31,85 @@ a{color:inherit;text-decoration:none}
 body.on-info #band,body.on-info #tex,body.on-archive #band,body.on-archive #tex{display:none}
 body.on-archive #entry,body.on-archive #spacer{display:none}
 body.on-tastes #band,body.on-tastes #tex,body.on-tastes #entry,body.on-tastes #spacer{display:none}
+body.on-projects #band,body.on-projects #tex,body.on-projects #entry,body.on-projects #spacer,
+body.on-project #band,body.on-project #tex,body.on-project #entry,body.on-project #spacer{display:none}
+
+/* ══════════ Projects: 학생 프로젝트 목록 ══════════ */
+#projects,#project{display:none}
+body.on-projects #projects{display:block}
+body.on-project #project{display:block}
+.pj-bg{position:fixed;inset:0;z-index:0;background:#1a1a1a url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAQ4CAAAAADtROkjAAAAZElEQVR4nOVQOxYAEAxTp3D/izKYDEj) 0 0/100% 100% no-repeat}
+.pj-bg .dither{position:absolute;inset:0}
+#pjScroller,#detScroller{position:fixed;left:0;right:0;top:0;z-index:2;will-change:transform}
+.pj-wrap{position:relative;zoom:var(--g);padding:223px 49px 120px 50px;min-height:1080px}
+.pj-top{display:flex;justify-content:flex-end;height:70px}
+.pj-add{all:unset;cursor:inherit;font-family:"Share Tech",monospace;font-size:18px;line-height:20px;letter-spacing:-.36px;color:rgba(255,255,255,.6);
+  padding-bottom:7px;border-bottom:1px solid rgba(255,255,255,.6);transition:color .3s,border-color .3s;align-self:flex-start}
+.pj-add:hover,.pj-add:focus-visible{color:var(--yellow);border-color:var(--yellow)}
+.pj-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:24px;row-gap:48px;align-items:start}
+.pj-card{display:block;color:inherit}
+.pj-thumb{aspect-ratio:658/513;background:#d9d9d9;overflow:hidden}
+.pj-thumb img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.22,.61,.36,1)}
+.pj-card:hover .pj-thumb img{transform:scale(1.03)}
+.pj-meta{margin-top:25px;padding-top:19px;border-top:1px solid rgba(255,255,255,.85);display:flex;align-items:baseline;justify-content:space-between;gap:24px}
+.pj-title{font-weight:700;font-size:25px;line-height:31px;letter-spacing:-.5px;color:#fff;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pj-name{flex:none;font-weight:400;font-size:22px;line-height:27px;letter-spacing:-.66px;color:rgba(255,255,255,.8)}
+.pj-empty{grid-column:1/-1;padding:160px 0;text-align:center;font-family:"Share Tech",monospace;font-size:18px;letter-spacing:-.36px;color:rgba(255,255,255,.35)}
+
+/* ── 상세: 왼쪽 글은 고정, 오른쪽 이미지 열만 흐른다 ── */
+.det-side{zoom:var(--g);position:fixed;z-index:3;left:49px;top:258px;width:355px}
+.det-side h2{font-weight:700;font-size:25px;line-height:41px;letter-spacing:-.5px;color:#fff;word-break:keep-all}
+.det-side .nm{margin-top:29px;font-weight:400;font-size:22px;line-height:27px;letter-spacing:-.66px;color:rgba(255,255,255,.8)}
+.det-side hr{border:0;height:1px;background:rgba(255,255,255,.85);margin:17px 0 0}
+.det-side p{margin-top:16px;font-weight:400;font-size:15px;line-height:28px;letter-spacing:-.6px;color:#fff;white-space:pre-line;word-break:keep-all}
+.det-side .del{all:unset;cursor:inherit;display:inline-block;margin-top:40px;font-family:"Share Tech",monospace;font-size:13px;letter-spacing:-.26px;color:rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);transition:color .3s,border-color .3s}
+.det-side .del:hover{color:#ff6b6b;border-color:#ff6b6b}
+.det-close{zoom:var(--g);position:fixed;z-index:3;left:1374px;top:200px;width:16px;height:16px;border:0;padding:0;background:none;cursor:inherit}
+.det-close svg{display:block;width:100%;height:100%}
+.det-close path{stroke:#fff;stroke-width:1.4;transition:stroke .3s}
+.det-close:hover path{stroke:var(--yellow)}
+.det-wrap{position:relative;zoom:var(--g);padding:258px 50px 133px 505px}
+.det-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.det-col figure{position:relative;margin:0;background:#d9d9d9;overflow:hidden;aspect-ratio:885/576}
+.det-col figure.wide{grid-column:1/-1}
+.det-col figure.half{aspect-ratio:430/576}
+.det-col img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.det-side--m{display:none}
+
+/* ── Add Project 팝업 ── */
+#play{position:fixed;inset:0;z-index:45;display:flex;align-items:center;justify-content:center;overflow:auto;padding:24px;
+  background:rgba(41,41,41,.6);-webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+  opacity:0;visibility:hidden;transition:opacity .45s cubic-bezier(.22,.61,.36,1),visibility 0s .45s}
+#play.open{opacity:1;visibility:visible;transition:opacity .45s cubic-bezier(.22,.61,.36,1)}
+.pbox{zoom:var(--g);position:relative;width:658px;max-width:100%;margin:auto;padding:86px 51px 51px;background:#0e0e0e;
+  transform:translateY(16px);transition:transform .55s cubic-bezier(.22,.61,.36,1)}
+#play.open .pbox{transform:none}
+.pbox h2{font-weight:700;font-size:23px;line-height:41px;letter-spacing:-.46px;color:var(--yellow);padding-bottom:11px;border-bottom:1px solid var(--yellow)}
+.pbox label{display:block;margin-top:31px;font-weight:400;font-size:18px;line-height:22px;letter-spacing:-.36px;color:rgba(255,255,255,.8)}
+.pbox .in{display:block;width:100%;margin-top:14px;height:43px;padding:0 14px;border:0;background:#d9d9d9;color:#111;
+  font:500 15px/43px "SUIT",sans-serif;letter-spacing:-.3px;outline:none;border-radius:0;-webkit-appearance:none}
+.pbox .in:focus{box-shadow:inset 0 0 0 2px var(--yellow)}
+.pbox textarea.in{height:43px;padding:11px 14px;line-height:21px;resize:vertical;transition:height .3s}
+.pbox textarea.in:focus{height:130px}
+.pbox .drop{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:inherit;color:#555;font-weight:500;line-height:1.2}
+.pbox .drop span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pbox .drop.over{box-shadow:inset 0 0 0 2px var(--yellow)}
+.pbox .drop span:last-child{font-family:"Share Tech",monospace;font-size:14px;letter-spacing:-.28px;color:#777}
+.pbox input[type=file]{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.pthumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:12px}
+.pthumbs div{position:relative;aspect-ratio:4/3;background:#1c1c1c;overflow:hidden}
+.pthumbs img{display:block;width:100%;height:100%;object-fit:cover}
+.pthumbs b{position:absolute;left:0;top:0;padding:2px 7px;font-family:"Share Tech",monospace;font-weight:400;font-size:13px;background:var(--yellow);color:#111}
+.pthumbs button{all:unset;cursor:inherit;position:absolute;right:0;top:0;width:22px;height:22px;background:rgba(0,0,0,.7);color:#fff;text-align:center;line-height:22px;font-size:14px}
+.pbox .msg{margin-top:14px;min-height:18px;font-size:13px;line-height:18px;letter-spacing:-.26px;color:#ff6b6b}
+.pbox .go{all:unset;cursor:inherit;display:block;width:100%;margin-top:14px;height:43px;text-align:center;background:var(--yellow);color:#111;
+  font-weight:700;font-size:16px;line-height:43px;letter-spacing:-.32px;transition:opacity .3s}
+.pbox .go:hover{opacity:.85}
+.pbox .go[disabled]{opacity:.4}
+.pclose{position:absolute;right:34px;top:22px;width:16px;height:16px;border:0;padding:0;background:none;cursor:inherit}
+.pclose svg{display:block;width:100%;height:100%}
+.pclose path{stroke:var(--yellow);stroke-width:1.4}
+html.modal{overflow:hidden}
 /* ── Tastes: 1080 한 화면, 시안 비율 그대로 ── */
 #tastes{display:none}
 body.on-tastes #tastes{display:block}
@@ -169,6 +248,22 @@ body.on-archive #archive{display:block}
 .arc-side li .kr{font-family:"SUIT",sans-serif;font-size:10px;line-height:12px;letter-spacing:0;opacity:.6}
 @media (max-width:1100px){
   .arc-wrap{padding:150px 24px 64px}
+  .pj-wrap{padding:140px 24px 64px;min-height:0}
+  .pj-grid{grid-template-columns:1fr;row-gap:36px}
+  .pj-title{font-size:19px;line-height:26px;white-space:normal}
+  .pj-name{font-size:16px}
+  .pj-meta{margin-top:16px;padding-top:12px}
+  .det-side,.det-close{display:none}
+  .det-side--m{display:block;position:relative;left:auto;top:auto;width:auto;margin-bottom:36px;zoom:1}
+  .det-side--m h2{font-size:21px;line-height:30px}
+  .det-side--m p{font-size:14px;line-height:24px}
+  .det-wrap{padding:140px 24px 64px}
+  .det-col{gap:12px}
+  .det-back{all:unset;cursor:inherit;display:inline-block;margin-bottom:24px;font-family:"Share Tech",monospace;font-size:16px;color:var(--yellow);border-bottom:1px solid var(--yellow)}
+  .pbox{padding:64px 24px 32px}
+  .pbox .drop span:first-child{font-size:13px}
+  .pbox label{font-size:16px}
+  .pclose{right:20px;top:18px}
   .arc-col{width:100%;gap:12px}
   .arc-row{gap:12px}
   .arc-side{display:none}
@@ -280,7 +375,7 @@ footer{margin:544px -48px 0 -53px;padding-left:calc(50% + 50.5px - 123px);text-a
 /* ══════════ 모바일 (폰) ══════════ */
 html.m #spacer{display:none}
 html.m #hint{display:none}
-html.m body:not(.on-info):not(.on-tastes):not(.on-archive){overflow:hidden;height:100vh;height:100svh}
+html.m body:not([class*="on-"]){overflow:hidden;height:100vh;height:100svh}
 html.m #logo{width:84vw;top:50%}
 @media (max-width:768px){
   header{height:64px}
@@ -349,6 +444,7 @@ html.m #logo{width:84vw;top:50%}
   <nav>
     <a href="#info" class="on" id="toInfo">Info</a>
     <a href="#tastes" id="toTastes">Tastes</a>
+    <a href="#projects" id="toProjects">Projects</a>
     <a href="#archive" id="toArchive">Archive</a>
   </nav>
  </div>
@@ -511,6 +607,53 @@ html.m #logo{width:84vw;top:50%}
     </div>
   </div>
 </main>
+
+<!-- Projects -->
+<main id="projects">
+  <div class="pj-bg"><div class="dither"></div></div>
+  <div id="pjScroller">
+    <div class="pj-wrap">
+      <div class="pj-top"><button type="button" class="pj-add" id="pjAdd">Add Project</button></div>
+      <div class="pj-grid" id="pjGrid"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Project detail -->
+<main id="project">
+  <div class="pj-bg"><div class="dither"></div></div>
+  <aside class="det-side" id="detSide">
+    <h2></h2><p class="nm"></p><hr><p class="ds"></p>
+    <button type="button" class="del">삭제</button>
+  </aside>
+  <button type="button" class="det-close" id="detClose" aria-label="목록으로"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1 L15 15 M15 1 L1 15" fill="none"/></svg></button>
+  <div id="detScroller">
+    <div class="det-wrap">
+      <div class="det-side--m" id="detSideM"><button type="button" class="det-back">← Projects</button><h2></h2><p class="nm"></p><hr><p class="ds"></p></div>
+      <div class="det-col" id="detCol"></div>
+    </div>
+  </div>
+</main>
+
+<!-- Add Project 팝업 -->
+<div id="play" role="dialog" aria-modal="true" aria-label="프로젝트 추가" aria-hidden="true">
+  <form class="pbox" id="pform" novalidate>
+    <button type="button" class="pclose" id="pclose" aria-label="닫기"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1 L15 15 M15 1 L1 15" fill="none"/></svg></button>
+    <h2>프로젝트를 추가해주세요</h2>
+    <label for="pname">이름</label>
+    <input class="in" id="pname" name="name" type="text" maxlength="30" autocomplete="off">
+    <label for="ptitle">프로젝트명</label>
+    <input class="in" id="ptitle" name="title" type="text" maxlength="60" autocomplete="off">
+    <label for="pdesc">프로젝트 설명</label>
+    <textarea class="in" id="pdesc" name="desc" maxlength="1200"></textarea>
+    <label for="pfile">이미지 (배치 순서대로 올려주세요. PNG, JPG 파일)</label>
+    <div class="in drop" id="pdrop" tabindex="0" role="button"><span id="pdropTxt">여기를 눌러 선택하거나 파일을 끌어다 놓으세요</span><span>0 / 4</span></div>
+    <input id="pfile" type="file" accept="image/png,image/jpeg" multiple>
+    <div class="pthumbs" id="pthumbs"></div>
+    <div class="msg" id="pmsg"></div>
+    <button type="submit" class="go" id="pgo">추가하기</button>
+  </form>
+</div>
 
 <!-- Tastes -->
 <main id="tastes">
@@ -681,10 +824,12 @@ html.m #logo{width:84vw;top:50%}
   const fxArcOf = s => [...document.querySelectorAll(`#archive .arc-col[data-set="${s}"] .fx`)];
   let fxArc = fxArcOf('merch');
   const fxTastes = [...document.querySelectorAll('#tastes .fx')];
-  const fxList = () => view === 'archive' ? fxArc : view === 'tastes' ? fxTastes : fxInfo;
+  let fxProj = [], fxDet = [];
+  const fxList = () => view === 'archive' ? fxArc : view === 'tastes' ? fxTastes : view === 'projects' ? fxProj : view === 'project' ? fxDet : fxInfo;
   const CONFIG = { ease:.085, fadeFloor:.06, fadeCurve:1.7, span:.62 };
   let scrollCurrent = 0;
-  const activeScroller = () => view === 'archive' ? arcScroller : scroller;
+  const pjScroller = document.getElementById('pjScroller'), detScroller = document.getElementById('detScroller');
+  const activeScroller = () => view === 'archive' ? arcScroller : view === 'projects' ? pjScroller : view === 'project' ? detScroller : scroller;
 
   function fadeValue(d, span){ return Math.max(CONFIG.fadeFloor, Math.min(1, 1 - Math.pow(d/span, CONFIG.fadeCurve))); }
 
@@ -715,7 +860,7 @@ html.m #logo{width:84vw;top:50%}
   }
   if ('ResizeObserver' in window){
     const ro = new ResizeObserver(() => setInfoHeight());
-    ro.observe(scroller); ro.observe(arcScroller);
+    ro.observe(scroller); ro.observe(arcScroller); ro.observe(pjScroller); ro.observe(detScroller);
   }
 
   function applyProximityFade(){
@@ -811,11 +956,12 @@ html.m #logo{width:84vw;top:50%}
     await wait(520);
   }
 
-  const navInfo = document.getElementById('toInfo'), navArc = document.getElementById('toArchive'), navTst = document.getElementById('toTastes');
+  const navInfo = document.getElementById('toInfo'), navArc = document.getElementById('toArchive'), navTst = document.getElementById('toTastes'), navPrj = document.getElementById('toProjects');
   function setNav(){
     navInfo.classList.toggle('on', view === 'info' || view === 'entry');   // 메인·Info 시안은 Info가 노랑
     navTst.classList.toggle('on', view === 'tastes');
     navArc.classList.toggle('on', view === 'archive');
+    navPrj.classList.toggle('on', view === 'projects' || view === 'project');
   }
 
   async function goView(next){
@@ -826,8 +972,10 @@ html.m #logo{width:84vw;top:50%}
       body.classList.toggle('on-info', next === 'info');
       body.classList.toggle('on-archive', next === 'archive');
       body.classList.toggle('on-tastes', next === 'tastes');
+      body.classList.toggle('on-projects', next === 'projects');
+      body.classList.toggle('on-project', next === 'project');
       if (next !== 'tastes' && window.__stopTaste) window.__stopTaste();
-      history.replaceState(null, '', '#' + next);
+      history.replaceState(null, '', next === 'project' ? '#project/' + curProject : '#' + next);
       setNav();
       scrollTo(0, 0); scrollCurrent = 0; setInfoHeight(); infoFrame();
     }, setupRise);   // 막이 걷히는 순간 떠오르기 시작
@@ -836,6 +984,7 @@ html.m #logo{width:84vw;top:50%}
   const goInfo = () => goView('info');
   const goArchive = () => goView('archive');
   const goTastes = () => goView('tastes');
+  const goProjects = () => goView('projects');
   /* Tastes video 01 — 누르면 소리와 함께 재생, 다시 누르면 멈춤. 끝나면 처음 화면으로 */
   (function tasteVideo(){
     const card = document.querySelector('.tst-card.c1'), lay = document.getElementById('vlay');
@@ -856,12 +1005,148 @@ html.m #logo{width:84vw;top:50%}
     window.__stopTaste = close;
   })();
 
+  /* ══════════════ Projects: 학생 프로젝트 올리기·보기 ══════════════
+     저장소: 지금은 이 브라우저 안(IndexedDB). 다른 사람도 보려면 서버 저장소(Supabase 등)로 바꿔야 한다. */
+  let curProject = null;
+  const DB = (() => {
+    let db;
+    const open = () => db ? Promise.resolve(db) : new Promise((res, rej) => {
+      const r = indexedDB.open('tt-projects', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('projects', { keyPath:'id' });
+      r.onsuccess = () => res(db = r.result); r.onerror = () => rej(r.error);
+    });
+    const tx = (mode, fn) => open().then(d => new Promise((res, rej) => {
+      const t = d.transaction('projects', mode), q = fn(t.objectStore('projects'));
+      t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error);
+    }));
+    return { all:() => tx('readonly', s => s.getAll()), get:id => tx('readonly', s => s.get(id)),
+             put:p => tx('readwrite', s => s.put(p)), del:id => tx('readwrite', s => s.delete(id)) };
+  })();
+  const store = {
+    list: async () => (await DB.all() || []).sort((a, b) => a.created - b.created),   // 올린 순서대로
+    get: id => DB.get(id), add: p => DB.put(p), remove: id => DB.del(id)
+  };
+
+  const urls = [];   // 만들어 둔 이미지 주소는 다음 렌더 때 해제
+  const freeUrls = () => { urls.splice(0).forEach(u => URL.revokeObjectURL(u)); };
+  const blobUrl = b => { const u = URL.createObjectURL(b); urls.push(u); return u; };
+  const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
+
+  const pjGrid = document.getElementById('pjGrid');
+  async function renderProjects(){
+    const list = await store.list();
+    freeUrls();
+    pjGrid.innerHTML = list.length ? list.map(p => `
+      <a class="pj-card fx" href="#project/${encodeURIComponent(p.id)}" data-id="${esc(p.id)}">
+        <div class="pj-thumb">${p.images[0] ? `<img src="${blobUrl(p.images[0])}" alt="">` : ''}</div>
+        <div class="pj-meta"><span class="pj-title">${esc(p.title)}</span><span class="pj-name">${esc(p.name)}</span></div>
+      </a>`).join('') : '<div class="pj-empty fx">No projects yet</div>';
+    fxProj = [...pjGrid.querySelectorAll('.fx')];
+    if (view === 'projects'){ setInfoHeight(); setupRise(); }
+  }
+  pjGrid.addEventListener('click', e => {
+    const a = e.target.closest('.pj-card'); if (!a) return;
+    e.preventDefault(); goProject(a.dataset.id);
+  });
+
+  const detSide = document.getElementById('detSide'), detSideM = document.getElementById('detSideM'), detCol = document.getElementById('detCol');
+  async function renderProject(id){
+    const p = await store.get(id); if (!p) return false;
+    for (const s of [detSide, detSideM]){
+      s.querySelector('h2').textContent = p.title; s.querySelector('.nm').textContent = p.name; s.querySelector('.ds').textContent = p.desc || '';
+    }
+    freeUrls();
+    // 올린 순서대로: 1 = 가로 전체, 2·3 = 반반, 4 = 가로 전체 (시안 배치)
+    const cls = ['wide', 'half', 'half', 'wide'];
+    detCol.innerHTML = p.images.map((b, i) => `<figure class="fx ${cls[i] || 'wide'}"><img src="${blobUrl(b)}" alt="${esc(p.title)} ${i+1}"></figure>`).join('');
+    fxDet = [...detCol.querySelectorAll('.fx')];
+    return true;
+  }
+  async function goProject(id){
+    if (!(await renderProject(id))) return;
+    curProject = id;
+    await goView('project');
+  }
+  document.getElementById('detClose').addEventListener('click', goProjects);
+  detSideM.querySelector('.det-back').addEventListener('click', goProjects);
+  detSide.querySelector('.del').addEventListener('click', async () => {
+    if (!curProject || !confirm('이 프로젝트를 삭제할까요?')) return;
+    await store.remove(curProject); await renderProjects(); goProjects();
+  });
+
+  /* ── 팝업 ── */
+  const play = document.getElementById('play'), pform = document.getElementById('pform');
+  const pfile = document.getElementById('pfile'), pdrop = document.getElementById('pdrop'), pthumbs = document.getElementById('pthumbs');
+  const pmsg = document.getElementById('pmsg'), pgo = document.getElementById('pgo'), pdropTxt = document.getElementById('pdropTxt');
+  let picked = [];   // {file, url}
+  function openPopup(){ pform.reset(); picked = []; drawThumbs(); pmsg.textContent = ''; play.classList.add('open'); play.setAttribute('aria-hidden', 'false'); document.documentElement.classList.add('modal'); setTimeout(() => document.getElementById('pname').focus(), 450); }
+  function closePopup(){ play.classList.remove('open'); play.setAttribute('aria-hidden', 'true'); document.documentElement.classList.remove('modal'); picked.forEach(x => URL.revokeObjectURL(x.url)); picked = []; }
+  document.getElementById('pjAdd').addEventListener('click', openPopup);
+  document.getElementById('pclose').addEventListener('click', closePopup);
+  play.addEventListener('click', e => { if (e.target === play) closePopup(); });
+  addEventListener('keydown', e => { if (e.key === 'Escape' && play.classList.contains('open')) closePopup(); });
+
+  function addFiles(files){
+    for (const f of files){
+      if (!/^image\/(png|jpeg)$/.test(f.type)){ pmsg.textContent = 'PNG, JPG 파일만 올릴 수 있어요.'; continue; }
+      if (picked.length >= 4){ pmsg.textContent = '이미지는 4장까지예요.'; break; }
+      picked.push({ file:f, url:URL.createObjectURL(f) });
+    }
+    drawThumbs();
+  }
+  function drawThumbs(){
+    pthumbs.innerHTML = picked.map((x, i) => `<div><img src="${x.url}" alt=""><b>${i+1}</b><button type="button" data-i="${i}" aria-label="빼기">×</button></div>`).join('');
+    pdrop.querySelector('span:last-child').textContent = `${picked.length} / 4`;
+    pdropTxt.textContent = picked.length ? (picked.length < 4 ? '더 올리려면 다시 누르세요' : '4장이 모두 올라갔어요') : '여기를 눌러 선택하거나 파일을 끌어다 놓으세요';
+  }
+  pthumbs.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; URL.revokeObjectURL(picked[b.dataset.i].url); picked.splice(b.dataset.i, 1); drawThumbs(); });
+  pdrop.addEventListener('click', () => pfile.click());
+  pdrop.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pfile.click(); } });
+  pfile.addEventListener('change', () => { addFiles([...pfile.files]); pfile.value = ''; });
+  ['dragenter', 'dragover'].forEach(ev => pdrop.addEventListener(ev, e => { e.preventDefault(); pdrop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => pdrop.addEventListener(ev, e => { e.preventDefault(); pdrop.classList.remove('over'); }));
+  pdrop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
+
+  // 긴 변 1800px로 줄여 저장 — 폰 사진 원본은 너무 크다
+  async function shrink(file){
+    const bmp = await createImageBitmap(file).catch(() => null);
+    if (!bmp) return file;
+    const s = Math.min(1, 1800/Math.max(bmp.width, bmp.height));
+    if (s === 1 && file.size < 1.5e6) return file;
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width*s); c.height = Math.round(bmp.height*s);
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    const png = file.type === 'image/png';
+    return new Promise(r => c.toBlob(b => r(b || file), png ? 'image/png' : 'image/jpeg', .88));
+  }
+  pform.addEventListener('submit', async e => {
+    e.preventDefault();
+    const name = pform.name.value.trim(), title = pform.title.value.trim(), desc = pform.desc.value.trim();
+    if (!name){ pmsg.textContent = '이름을 적어주세요.'; pform.name.focus(); return; }
+    if (!title){ pmsg.textContent = '프로젝트명을 적어주세요.'; pform.title.focus(); return; }
+    if (!picked.length){ pmsg.textContent = '이미지를 1장 이상 올려주세요.'; return; }
+    pgo.disabled = true; pmsg.textContent = '올리는 중…';
+    try {
+      const images = [];
+      for (const x of picked) images.push(await shrink(x.file));
+      await store.add({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, title, desc, images, created: Date.now() });
+      await renderProjects(); closePopup();
+    } catch (err){ pmsg.textContent = '저장하지 못했어요. 다시 시도해주세요.'; }
+    pgo.disabled = false;
+  });
+  renderProjects();
+  // 주소창의 #project/… 로 바로 들어오거나 뒤로가기 했을 때
+  addEventListener('hashchange', () => {
+    const h = location.hash;
+    if (h.startsWith('#project/')){ const id = decodeURIComponent(h.slice(9)); if (view !== 'project' || curProject !== id) goProject(id); }
+    else if (h === '#projects' && view !== 'projects') goProjects();
+  });
+
   async function goEntry(){
     if (leaving) return;
     if (view === 'entry'){ scrollTo({ top:0, behavior:'smooth' }); return; }
     leaving = true;
     await swap(() => {
-      view = 'entry'; body.classList.remove('on-info', 'on-archive', 'on-tastes'); if (window.__stopTaste) window.__stopTaste(); body.style.height = '';
+      view = 'entry'; body.classList.remove('on-info', 'on-archive', 'on-tastes', 'on-projects', 'on-project'); if (window.__stopTaste) window.__stopTaste(); body.style.height = '';
       history.replaceState(null, '', location.pathname + location.search);
       setNav();
       scrollTo(0, 0); S = 0; t0 = null; doneAt = 0;
@@ -874,6 +1159,7 @@ html.m #logo{width:84vw;top:50%}
   navInfo.addEventListener('click', e => { e.preventDefault(); goInfo(); });
   navArc.addEventListener('click', e => { e.preventDefault(); goArchive(); });
   navTst.addEventListener('click', e => { e.preventDefault(); goTastes(); });
+  navPrj.addEventListener('click', e => { e.preventDefault(); goProjects(); });
   document.getElementById('toEntry').addEventListener('click', e => { e.preventDefault(); goEntry(); });
   document.querySelectorAll('nav a[aria-disabled]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 
@@ -895,6 +1181,12 @@ html.m #logo{width:84vw;top:50%}
       view = 'info'; body.classList.add('on-info'); setInfoHeight(); setupRise();
     } else if (location.hash === '#tastes'){
       view = 'tastes'; body.classList.add('on-tastes'); setNav(); setupRise();
+    } else if (location.hash === '#projects'){
+      view = 'projects'; body.classList.add('on-projects'); setNav(); setInfoHeight(); setupRise();
+    } else if (location.hash.startsWith('#project/')){
+      curProject = decodeURIComponent(location.hash.slice(9));
+      view = 'project'; body.classList.add('on-project'); setNav(); setInfoHeight();
+      renderProject(curProject).then(ok => { if (!ok) goProjects(); });
     } else if (location.hash === '#archive'){
       view = 'archive'; body.classList.add('on-archive'); setNav(); setInfoHeight(); setupRise();
     } else {
@@ -906,7 +1198,7 @@ html.m #logo{width:84vw;top:50%}
   }
   const fontsReady = document.fonts ? document.fonts.ready : Promise.resolve();
   Promise.all([fontsReady, img.decode ? img.decode().catch(()=>{}) : null]).then(boot);
-  window.__tt = { goInfo, goArchive, goEntry, get S(){ return S; } };
+  window.__tt = { goInfo, goArchive, goProjects, goEntry, get S(){ return S; } };
 })();
 </script>
 </body>
