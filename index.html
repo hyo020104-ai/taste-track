@@ -1165,15 +1165,32 @@ html.m #logo{width:84vw;top:50%}
   pdrop.addEventListener('drop', e => addFiles([...e.dataTransfer.files]));
 
   // 긴 변 1800px로 줄여 저장 — 폰 사진 원본은 너무 크다
+  // 보관함 한도는 장당 5MB → 4.5MB 안으로 맞춘다. 긴 변 1800px, PNG가 너무 크면 JPG로 바꾸고 화질을 조금씩 낮춘다
+  const LIMIT = 4.5e6;
+  const toBlob = (c, type, q) => new Promise(r => c.toBlob(r, type, q));
   async function shrink(file){
     const bmp = await createImageBitmap(file).catch(() => null);
-    if (!bmp) return file;
+    if (!bmp){ if (file.size > LIMIT) throw new Error('SIZE'); return file; }
     const s = Math.min(1, 1800/Math.max(bmp.width, bmp.height));
-    if (s === 1 && file.size < 1.5e6) return file;   // 보관함 한도는 장당 5MB
+    if (s === 1 && file.size < 1.5e6) return file;
     const c = document.createElement('canvas'); c.width = Math.round(bmp.width*s); c.height = Math.round(bmp.height*s);
-    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
-    const png = file.type === 'image/png';
-    return new Promise(r => c.toBlob(b => r(b || file), png ? 'image/png' : 'image/jpeg', .88));
+    const g = c.getContext('2d');
+    if (file.type === 'image/png'){
+      g.drawImage(bmp, 0, 0, c.width, c.height);
+      const b = await toBlob(c, 'image/png');
+      if (b && b.size <= LIMIT) return b;
+    }
+    g.fillStyle = '#1a1a1a'; g.fillRect(0, 0, c.width, c.height);   // 투명 PNG를 JPG로 바꿀 때 사이트 배경색으로 채운다
+    g.drawImage(bmp, 0, 0, c.width, c.height);
+    for (const q of [.88, .8, .7, .6, .5]){ const b = await toBlob(c, 'image/jpeg', q); if (b && b.size <= LIMIT) return b; }
+    throw new Error('SIZE');
+  }
+  function why(err){
+    const m = String(err && err.message || err);
+    if (m === 'SIZE' || /413|too large|exceeded|maximum/i.test(m)) return '이미지 용량이 너무 커요. 더 작은 파일로 올려주세요.';
+    if (/mime|not supported|invalid_mime/i.test(m)) return 'PNG, JPG 파일만 올릴 수 있어요.';
+    if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return '인터넷 연결이 끊겼어요. 다시 시도해주세요.';
+    return '저장하지 못했어요. 다시 시도해주세요. (' + m.slice(0, 60) + ')';
   }
   pform.addEventListener('submit', async e => {
     e.preventDefault();
@@ -1187,7 +1204,7 @@ html.m #logo{width:84vw;top:50%}
       for (const x of picked) files.push(await shrink(x.file));
       await store.add({ name, title, desc }, files);
       await renderProjects(); closePopup();
-    } catch (err){ console.error(err); pmsg.textContent = '저장하지 못했어요. 다시 시도해주세요.'; }
+    } catch (err){ console.error(err); pmsg.textContent = why(err); }
     pgo.disabled = false;
   });
   renderProjects();
