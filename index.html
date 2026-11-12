@@ -624,7 +624,6 @@ html.m #logo{width:84vw;top:50%}
   <div class="pj-bg"><div class="dither"></div></div>
   <aside class="det-side" id="detSide">
     <h2></h2><p class="nm"></p><hr><p class="ds"></p>
-    <button type="button" class="del">삭제</button>
   </aside>
   <button type="button" class="det-close" id="detClose" aria-label="목록으로"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1 L15 15 M15 1 L1 15" fill="none"/></svg></button>
   <div id="detScroller">
@@ -1006,39 +1005,43 @@ html.m #logo{width:84vw;top:50%}
   })();
 
   /* ══════════════ Projects: 학생 프로젝트 올리기·보기 ══════════════
-     저장소: 지금은 이 브라우저 안(IndexedDB). 다른 사람도 보려면 서버 저장소(Supabase 등)로 바꿔야 한다. */
+     저장소: Supabase (표 projects + 이미지 보관함 projects). 누구나 보고 올릴 수 있고, 지우기는 Supabase 대시보드에서만. */
   let curProject = null;
-  const DB = (() => {
-    let db;
-    const open = () => db ? Promise.resolve(db) : new Promise((res, rej) => {
-      const r = indexedDB.open('tt-projects', 1);
-      r.onupgradeneeded = () => r.result.createObjectStore('projects', { keyPath:'id' });
-      r.onsuccess = () => res(db = r.result); r.onerror = () => rej(r.error);
-    });
-    const tx = (mode, fn) => open().then(d => new Promise((res, rej) => {
-      const t = d.transaction('projects', mode), q = fn(t.objectStore('projects'));
-      t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error);
-    }));
-    return { all:() => tx('readonly', s => s.getAll()), get:id => tx('readonly', s => s.get(id)),
-             put:p => tx('readwrite', s => s.put(p)), del:id => tx('readwrite', s => s.delete(id)) };
-  })();
+  const SB = 'https://kfwzbznzfnkxrfwtroxk.supabase.co', SB_KEY = 'sb_publishable_VfeKr3AHlvumw4FcS2ZRNg_b_jiUCzJ';
+  const SBH = { apikey:SB_KEY };
+  const imgUrl = path => `${SB}/storage/v1/object/public/projects/${path}`;
+  async function api(path, opt = {}){
+    const r = await fetch(SB + path, { ...opt, headers:{ ...SBH, ...(opt.headers || {}) } });
+    if (!r.ok) throw new Error(r.status + ' ' + await r.text());
+    return r.status === 204 ? null : r.json();
+  }
+  const cache = new Map();
   const store = {
-    list: async () => (await DB.all() || []).sort((a, b) => a.created - b.created),   // 올린 순서대로
-    get: id => DB.get(id), add: p => DB.put(p), remove: id => DB.del(id)
+    list: async () => { const l = await api('/rest/v1/projects?select=*&order=created_at.asc'); l.forEach(p => cache.set(p.id, p)); return l; },
+    get: async id => cache.get(id) || (await api(`/rest/v1/projects?select=*&id=eq.${encodeURIComponent(id)}`))[0],
+    add: async (p, files) => {
+      const folder = (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2));
+      const images = [];
+      for (let i = 0; i < files.length; i++){
+        const f = files[i], ext = f.type === 'image/png' ? 'png' : 'jpg', path = `${folder}/${i+1}.${ext}`;
+        await api(`/storage/v1/object/projects/${path}`, { method:'POST', headers:{ 'Content-Type':f.type || 'image/jpeg', 'x-upsert':'false' }, body:f });
+        images.push(path);
+      }
+      const [row] = await api('/rest/v1/projects', { method:'POST', headers:{ 'Content-Type':'application/json', Prefer:'return=representation' },
+        body:JSON.stringify({ name:p.name, title:p.title, description:p.desc, images }) });
+      cache.set(row.id, row); return row;
+    }
   };
 
-  const urls = [];   // 만들어 둔 이미지 주소는 다음 렌더 때 해제
-  const freeUrls = () => { urls.splice(0).forEach(u => URL.revokeObjectURL(u)); };
-  const blobUrl = b => { const u = URL.createObjectURL(b); urls.push(u); return u; };
   const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
   const pjGrid = document.getElementById('pjGrid');
   async function renderProjects(){
-    const list = await store.list();
-    freeUrls();
+    let list = [];
+    try { list = await store.list(); } catch (e){ pjGrid.innerHTML = '<div class="pj-empty fx">목록을 불러오지 못했어요. 새로고침 해주세요.</div>'; return; }
     pjGrid.innerHTML = list.length ? list.map(p => `
       <a class="pj-card fx" href="#project/${encodeURIComponent(p.id)}" data-id="${esc(p.id)}">
-        <div class="pj-thumb">${p.images[0] ? `<img src="${blobUrl(p.images[0])}" alt="">` : ''}</div>
+        <div class="pj-thumb">${p.images[0] ? `<img src="${esc(imgUrl(p.images[0]))}" alt="" loading="lazy">` : ''}</div>
         <div class="pj-meta"><span class="pj-title">${esc(p.title)}</span><span class="pj-name">${esc(p.name)}</span></div>
       </a>`).join('') : '<div class="pj-empty fx">No projects yet</div>';
     fxProj = [...pjGrid.querySelectorAll('.fx')];
@@ -1051,14 +1054,13 @@ html.m #logo{width:84vw;top:50%}
 
   const detSide = document.getElementById('detSide'), detSideM = document.getElementById('detSideM'), detCol = document.getElementById('detCol');
   async function renderProject(id){
-    const p = await store.get(id); if (!p) return false;
+    let p; try { p = await store.get(id); } catch (e){ return false; } if (!p) return false;
     for (const s of [detSide, detSideM]){
-      s.querySelector('h2').textContent = p.title; s.querySelector('.nm').textContent = p.name; s.querySelector('.ds').textContent = p.desc || '';
+      s.querySelector('h2').textContent = p.title; s.querySelector('.nm').textContent = p.name; s.querySelector('.ds').textContent = p.description || '';
     }
-    freeUrls();
     // 올린 순서대로: 1 = 가로 전체, 2·3 = 반반, 4 = 가로 전체 (시안 배치)
     const cls = ['wide', 'half', 'half', 'wide'];
-    detCol.innerHTML = p.images.map((b, i) => `<figure class="fx ${cls[i] || 'wide'}"><img src="${blobUrl(b)}" alt="${esc(p.title)} ${i+1}"></figure>`).join('');
+    detCol.innerHTML = p.images.map((b, i) => `<figure class="fx ${cls[i] || 'wide'}"><img src="${esc(imgUrl(b))}" alt="${esc(p.title)} ${i+1}"></figure>`).join('');
     fxDet = [...detCol.querySelectorAll('.fx')];
     return true;
   }
@@ -1069,10 +1071,6 @@ html.m #logo{width:84vw;top:50%}
   }
   document.getElementById('detClose').addEventListener('click', goProjects);
   detSideM.querySelector('.det-back').addEventListener('click', goProjects);
-  detSide.querySelector('.del').addEventListener('click', async () => {
-    if (!curProject || !confirm('이 프로젝트를 삭제할까요?')) return;
-    await store.remove(curProject); await renderProjects(); goProjects();
-  });
 
   /* ── 팝업 ── */
   const play = document.getElementById('play'), pform = document.getElementById('pform');
@@ -1112,7 +1110,7 @@ html.m #logo{width:84vw;top:50%}
     const bmp = await createImageBitmap(file).catch(() => null);
     if (!bmp) return file;
     const s = Math.min(1, 1800/Math.max(bmp.width, bmp.height));
-    if (s === 1 && file.size < 1.5e6) return file;
+    if (s === 1 && file.size < 1.5e6) return file;   // 보관함 한도는 장당 5MB
     const c = document.createElement('canvas'); c.width = Math.round(bmp.width*s); c.height = Math.round(bmp.height*s);
     c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
     const png = file.type === 'image/png';
@@ -1126,11 +1124,11 @@ html.m #logo{width:84vw;top:50%}
     if (!picked.length){ pmsg.textContent = '이미지를 1장 이상 올려주세요.'; return; }
     pgo.disabled = true; pmsg.textContent = '올리는 중…';
     try {
-      const images = [];
-      for (const x of picked) images.push(await shrink(x.file));
-      await store.add({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), name, title, desc, images, created: Date.now() });
+      const files = [];
+      for (const x of picked) files.push(await shrink(x.file));
+      await store.add({ name, title, desc }, files);
       await renderProjects(); closePopup();
-    } catch (err){ pmsg.textContent = '저장하지 못했어요. 다시 시도해주세요.'; }
+    } catch (err){ console.error(err); pmsg.textContent = '저장하지 못했어요. 다시 시도해주세요.'; }
     pgo.disabled = false;
   });
   renderProjects();
