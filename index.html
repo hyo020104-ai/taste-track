@@ -61,7 +61,12 @@ body.on-project #project{display:block}
 .pj-empty{grid-column:1/-1;padding:160px 0;text-align:center;font-family:"Share Tech",monospace;font-size:18px;letter-spacing:-.36px;color:rgba(255,255,255,.35)}
 
 /* ── 상세: 왼쪽 글은 고정, 오른쪽 이미지 열만 흐른다 ── */
-.det-side{zoom:var(--g);position:fixed;z-index:3;left:49px;top:258px;width:355px}
+/* 위치·너비만 화면 비율(--g)을 따르고 글자 크기는 고정. 글이 길면 이 칸 안에서 따로 스크롤된다 */
+.det-side{position:fixed;z-index:3;left:calc(49px * var(--g));top:calc(258px * var(--g));bottom:40px;width:calc(355px * var(--g));min-width:320px;
+  overflow-y:auto;padding-right:14px;padding-bottom:24px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.25) transparent}
+.det-side::-webkit-scrollbar{width:4px}
+.det-side::-webkit-scrollbar-thumb{background:rgba(255,255,255,.25)}
+body.is-admin .det-side{bottom:80px}
 .det-side h2{font-weight:700;font-size:25px;line-height:41px;letter-spacing:-.5px;color:var(--yellow);word-break:keep-all}
 .det-side .nm{margin-top:29px;font-weight:400;font-size:22px;line-height:27px;letter-spacing:-.66px;color:rgba(255,255,255,.8)}
 .det-side hr{border:0;height:1px;background:var(--yellow);margin:17px 0 0}
