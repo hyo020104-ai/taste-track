@@ -63,7 +63,19 @@ body.on-project #project{display:block}
 .det-side hr{border:0;height:1px;background:rgba(255,255,255,.85);margin:17px 0 0}
 .det-side p{margin-top:16px;font-weight:400;font-size:15px;line-height:28px;letter-spacing:-.6px;color:#fff;white-space:pre-line;word-break:keep-all}
 .det-side .del{all:unset;cursor:inherit;display:inline-block;margin-top:40px;font-family:"Share Tech",monospace;font-size:13px;letter-spacing:-.26px;color:rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3);transition:color .3s,border-color .3s}
-.det-side .del:hover{color:#ff6b6b;border-color:#ff6b6b}
+.det-side .del:hover,.det-side .del.arm{color:#ff6b6b;border-color:#ff6b6b}
+.det-side .del{display:none}
+body.is-admin .det-side .del{display:inline-block}
+.det-side--m .del{all:unset;margin-top:32px;font-family:"Share Tech",monospace;font-size:13px;color:rgba(255,255,255,.3);border-bottom:1px solid rgba(255,255,255,.3)}
+.det-side--m .del.arm{color:#ff6b6b;border-color:#ff6b6b}
+.adm{position:fixed;z-index:60;left:16px;bottom:16px;display:flex;align-items:center;gap:8px;padding:8px 10px;background:rgba(14,14,14,.92);border:1px solid rgba(255,255,255,.15);
+  font-family:"Share Tech",monospace;font-size:13px;color:rgba(255,255,255,.7)}
+.adm[hidden]{display:none}
+.adm-l{color:var(--yellow)}
+.adm input{width:150px;height:28px;padding:0 8px;border:0;background:#d9d9d9;color:#111;font:inherit}
+.adm button{all:unset;cursor:pointer;padding:0 8px;height:28px;line-height:28px;border:1px solid rgba(255,255,255,.3)}
+.adm button:hover{color:var(--yellow);border-color:var(--yellow)}
+body.is-admin .adm input,body.is-admin #admGo{display:none}
 .det-close{zoom:var(--g);position:fixed;z-index:3;left:1374px;top:200px;width:16px;height:16px;border:0;padding:0;background:none;cursor:inherit}
 .det-close svg{display:block;width:100%;height:100%}
 .det-close path{stroke:#fff;stroke-width:1.4;transition:stroke .3s}
@@ -623,16 +635,25 @@ html.m #logo{width:84vw;top:50%}
 <main id="project">
   <div class="pj-bg"><div class="dither"></div></div>
   <aside class="det-side" id="detSide">
-    <h2></h2><p class="nm"></p><hr><p class="ds"></p>
+    <h2></h2><p class="nm"></p><hr><p class="ds"></p><button type="button" class="del">Delete</button>
   </aside>
   <button type="button" class="det-close" id="detClose" aria-label="목록으로"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 1 L15 15 M15 1 L1 15" fill="none"/></svg></button>
   <div id="detScroller">
     <div class="det-wrap">
-      <div class="det-side--m" id="detSideM"><button type="button" class="det-back">← Projects</button><h2></h2><p class="nm"></p><hr><p class="ds"></p></div>
+      <div class="det-side--m" id="detSideM"><button type="button" class="det-back">← Projects</button><h2></h2><p class="nm"></p><hr><p class="ds"></p><button type="button" class="del">Delete</button></div>
       <div class="det-col" id="detCol"></div>
     </div>
   </div>
 </main>
+
+<!-- 관리자 -->
+<form class="adm" id="adm" autocomplete="off" hidden>
+  <span class="adm-l">ADMIN</span>
+  <input type="password" id="admKey" placeholder="관리자 키" aria-label="관리자 키">
+  <button type="submit" id="admGo">확인</button>
+  <button type="button" id="admOut" hidden>로그아웃</button>
+  <span id="admMsg"></span>
+</form>
 
 <!-- Add Project 팝업 -->
 <div id="play" role="dialog" aria-modal="true" aria-label="프로젝트 추가" aria-hidden="true">
@@ -1030,8 +1051,46 @@ html.m #logo{width:84vw;top:50%}
       const [row] = await api('/rest/v1/projects', { method:'POST', headers:{ 'Content-Type':'application/json', Prefer:'return=representation' },
         body:JSON.stringify({ name:p.name, title:p.title, description:p.desc, images }) });
       cache.set(row.id, row); return row;
+    },
+    // 관리자 키를 서버 함수가 확인한 뒤 줄을 지우고, 남은 이미지 파일도 지운다
+    remove: async (id, key) => {
+      const imgs = await api('/rest/v1/rpc/admin_delete', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ p_id:id, p_key:key }) });
+      cache.delete(id);
+      if (imgs && imgs.length) await api('/storage/v1/object/projects', { method:'DELETE', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ prefixes:imgs }) }).catch(() => {});
     }
   };
+
+  /* ── 관리자: 주소 끝에 ?admin 을 붙이면 키 입력창이 뜬다. 키가 맞으면 이 브라우저에서 Delete 버튼이 보인다 ── */
+  const ADM_KEY = 'tt_admin_key';
+  const adm = document.getElementById('adm'), admKey = document.getElementById('admKey'), admMsg = document.getElementById('admMsg'), admOut = document.getElementById('admOut');
+  let adminKey = null;
+  try { adminKey = localStorage.getItem(ADM_KEY); } catch (e){}
+  const checkKey = k => api('/rest/v1/rpc/admin_check', { method:'POST', headers:{ 'Content-Type':'application/json' }, body:JSON.stringify({ p_key:k }) });
+  function setAdmin(k){
+    adminKey = k;
+    try { k ? localStorage.setItem(ADM_KEY, k) : localStorage.removeItem(ADM_KEY); } catch (e){}
+    document.body.classList.toggle('is-admin', !!k);
+    admOut.hidden = !k; admMsg.textContent = k ? '삭제 가능' : '';
+    if (k) adm.hidden = false;
+  }
+  if (/[?&]admin\b/.test(location.search)) adm.hidden = false;
+  if (adminKey) checkKey(adminKey).then(ok => setAdmin(ok ? adminKey : null)).catch(() => {});
+  adm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const k = admKey.value.trim(); if (!k) return;
+    admMsg.textContent = '확인 중…';
+    try { const ok = await checkKey(k); if (ok){ admKey.value = ''; setAdmin(k); } else admMsg.textContent = '키가 틀렸어요'; }
+    catch (err){ admMsg.textContent = '확인 실패'; }
+  });
+  admOut.addEventListener('click', () => { setAdmin(null); adm.hidden = !/[?&]admin\b/.test(location.search); });
+  // 두 번 눌러야 지워진다 (첫 번째: "정말 삭제?")
+  document.querySelectorAll('.det-side .del, .det-side--m .del').forEach(b => b.addEventListener('click', async () => {
+    if (!adminKey || !curProject) return;
+    if (!b.classList.contains('arm')){ b.classList.add('arm'); b.textContent = '정말 삭제? 한 번 더'; setTimeout(() => { b.classList.remove('arm'); b.textContent = 'Delete'; }, 3500); return; }
+    b.textContent = '지우는 중…';
+    try { await store.remove(curProject, adminKey); b.classList.remove('arm'); b.textContent = 'Delete'; await renderProjects(); goProjects(); }
+    catch (err){ b.textContent = /forbidden|42501|401|403/.test(err.message) ? '키가 맞지 않아요' : '삭제 실패'; }
+  }));
 
   const esc = s => String(s || '').replace(/[&<>"]/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[c]));
 
